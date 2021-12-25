@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: latest-TODO
+
+    steps:
+      # Setup
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 0.93.3
+
+      # Build
+      - run: npm install
+      - run: hugo --minify
+
+      # Publish
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public

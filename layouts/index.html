@@ -1,0 +1,15 @@
+{{ define "main" }}
+<h1>{{ .Site.Title }}</h1>
+
+{{ .Content }}
+
+<nav><ul>
+{{ range .Site.RegularPages }}
+	<li>
+		{{ $date := .Date.UTC.Format "2006-01-02"  }}
+		<time datetime="{{ $date }}">{{ $date }}</time>
+		<a href="{{ .RelPermalink }}">{{ .Title }}</a>
+	</li>
+{{ end }}
+</ul></nav>
+{{ end }}

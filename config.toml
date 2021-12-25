@@ -1,0 +1,32 @@
+title = "nevi.dev"
+baseURL = "https://www.nevi.dev"
+
+copyright = """
+[email](mailto:nevivurn@nevi.dev) | [github](https://github.com/nevivurn)  
+Content on this site is [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+"""
+
+disableKinds = [
+	"section",
+	"taxonomy",
+	"term",
+	"RSS",
+	"sitemap",
+]
+[permalinks]
+  posts = "/:year/:month/:day/:slug"
+
+[[module.mounts]]
+	source = "assets"
+	target = "assets"
+[[module.mounts]]
+	source = "static"
+	target = "static"
+
+[[module.mounts]]
+	source = "node_modules/katex/dist"
+	target = "assets/dist/katex"
+	includeFiles = "/**/.min.*"
+[[module.mounts]]
+	source = "node_modules/katex/dist/fonts"
+	target = "static/dist/katex/fonts"

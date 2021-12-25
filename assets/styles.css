@@ -1,0 +1,28 @@
+@import "sanitize";
+@import "sanitize/forms";
+@import "sanitize/assets";
+@import "sanitize/typography";
+@import "sanitize/system-ui";
+@import "sanitize/ui-monospace";
+
+html, body {
+	height: 100%;
+}
+
+body {
+	max-width: 56rem;
+	width: 85%;
+	margin: 0 auto;
+
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+}
+
+footer {
+	text-align: center;
+	padding: 2rem 0;
+}
