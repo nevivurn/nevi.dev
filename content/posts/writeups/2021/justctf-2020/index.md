@@ -97,7 +97,7 @@ promising. Execute the PDF document as a ruby script, and download the resulting
 [zip file](pdf/flag.zip). Inside, we find a [`mutool`](pdf/mutool) binary and a
 `false_flag.md`:
 
-```
+````
 You didn't think it would be this easy, did you?
 
 https://www.youtube.com/watch?v=VVdmmN0su6E#t=11m32s
