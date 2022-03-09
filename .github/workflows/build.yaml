@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: latest-TODO
+    runs-on: ubuntu-latest
 
     steps:
       # Setup
