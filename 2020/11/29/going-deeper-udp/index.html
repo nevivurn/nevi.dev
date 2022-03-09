@@ -1,0 +1,134 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
+<meta name=msapplication-TileColor content="#2d89ef">
+<meta name=theme-color content="#282a36">
+<title>
+Going Deeper - UDP - nevi.dev
+</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
+</head><body>
+<main>
+<article>
+<header>
+<h1>Going Deeper - UDP</h1><time datetime=2020-11-29>2020-11-29</time>
+on <a href=/>nevi.dev</a>
+</header><p>I wanted to learn about TCP, but it seemed to be too complicated, so I decided
+to learn about UDP instead for now.</p><h2 id=udp-datagrams>UDP Datagrams</h2><p>User Datagram Protocol, or <strong>UDP</strong>, is a simple, stateless, and
+connectionless protocol for sending datagrams between internet hosts.</p><p>The protocol is so simple that its <a href=https://tools.ietf.org/html/rfc768>specification</a> fits in
+just three pages. For reference, <a href=https://tools.ietf.org/html/rfc793>RFC793</a>, which describes TCP, is 85
+pages long.</p><p>The UDP header contains just four 16-bit fields:</p><pre tabindex=0><code> 0      7 8     15 16    23 24    31
++--------+--------+--------+--------+
+|     Source      |   Destination   |
+|      Port       |      Port       |
++--------+--------+--------+--------+
+|                 |                 |
+|     Length      |    Checksum     |
++--------+--------+--------+--------+
+</code></pre><p>The source and destination ports distinguish different applications on the same
+internet host. The length is the length of the UDP header plus payload. Finally,
+the optional checksum is computed over the source and destination IP address,
+the protocol number (<code>17</code> for UDP), and the UDP length, and of course, the
+payload.</p><h2 id=a-simple-packet-capture>A Simple Packet Capture</h2><p>To see what UDP packets look like in practice, let&rsquo;s analyze it using <code>tshark</code>.</p><p><a href=simple-udp.pcap>simple-udp.pcap</a></p><pre tabindex=0><code>$ tshark -r simple-udp.pcap -V -x
+[...]
+Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1
+    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+    Total Length: 33
+    Identification: 0xc8ac (51372)
+    Flags: 0x4000, Don&#39;t fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don&#39;t fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+    Time to live: 64
+    Protocol: UDP (17)
+    Header checksum: 0x741d [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 127.0.0.1
+    Destination: 127.0.0.1
+User Datagram Protocol, Src Port: 8001, Dst Port: 8000
+    Source Port: 8001
+    Destination Port: 8000
+    Length: 13
+    Checksum: 0xfe20 [unverified]
+    [Checksum Status: Unverified]
+    [Stream index: 0]
+Data (5 bytes)
+
+0000  68 65 6c 6c 6f                                    hello
+    Data: 68656c6c6f
+    [Length: 5]
+</code></pre><p>Let&rsquo;s break that down.</p><pre tabindex=0><code>    0100 .... = Version: 4
+    .... 0101 = Header Length: 20 bytes (5)
+</code></pre><p>The IPv4 packet begins with the IP version number (4 for IPv4) and the header length.
+In this case, the IP header is 20 bytes long, the minimum length.</p><pre tabindex=0><code>    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+        0000 00.. = Differentiated Services Codepoint: Default (0)
+        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+</code></pre><p>Then, we encounter the DCSP and ECN fields. The
+<a href=https://en.wikipedia.org/wiki/Differentiated_services>DCSP</a> field specifies the QoS at the packet level, and
+the <a href=https://en.wikipedia.org/wiki/Explicit_Congestion_Notification>ECN</a> field allows routers to explicitly signal impending
+congestion, instead of dropping packets. This mechanism requires support at the
+transport layer and does not function with UDP.</p><pre tabindex=0><code>    Total Length: 33
+    Identification: 0xc8ac (51372)
+</code></pre><p>The total length of the packet is 33, with 20 bytes of IPv4 header, 8 bytes of
+UDP header, and 5 bytes of application payload. It is a 16-bit field, meaning
+that the theoretical maximum size of an IPv6 packet is 65,535 bytes.</p><p>The IPv4 identification field is used mainly for the reassembly of fragmented
+packets and serves no purpose here.</p><pre tabindex=0><code>    Flags: 0x4000, Don&#39;t fragment
+        0... .... .... .... = Reserved bit: Not set
+        .1.. .... .... .... = Don&#39;t fragment: Set
+        ..0. .... .... .... = More fragments: Not set
+        ...0 0000 0000 0000 = Fragment offset: 0
+</code></pre><p>The IPv4 flags are also used for the packet fragmentation mechanism. Here, the
+Don&rsquo;t fragment (DF) bit is set<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>, instructing routers to
+drop the packet if it&rsquo;s too large, instead of fragmenting the packet.</p><pre tabindex=0><code>    Time to live: 64
+    Header checksum: 0x741d [validation disabled]
+    [Header checksum status: Unverified]
+    Source: 127.0.0.1
+    Destination: 127.0.0.1
+</code></pre><p>The IPv4 header ends with the TTL, checksum, and the source and destination
+addresses.</p><p>The TTL is decremented at every router, on every hop. If the TTL reaches
+zero<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>, the router drops the packet, and replies with an ICMP Time
+Exceeded message. This mechanism is intended to prevent routing loops from
+sending the same packet around for eternity. This field is also be used by
+utilities such as <code>traceroute</code> to map out the path taken by a packet.</p><pre tabindex=0><code>User Datagram Protocol, Src Port: 8001, Dst Port: 8000
+    Source Port: 8001
+    Destination Port: 8000
+    Length: 13
+    Checksum: 0xfe20 [unverified]
+    [Checksum Status: Unverified]
+    [Stream index: 0]
+</code></pre><p>The UDP header only has four fields: the source and
+destination ports, datagram length, and the
+checksum<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>.</p><pre tabindex=0><code>0000  68 65 6c 6c 6f                                    hello
+    Data: 68656c6c6f
+    [Length: 5]
+</code></pre><p>Finally, we have the all-important application payload.</p><h2 id=references>References</h2><ul>
+<li><a href=https://tools.ietf.org/html/rfc768>RFC768</a>: User Datagram Protocol</li></ul><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>By default, Linux sets the DF bit (and performs PMTU
+discovery) if the packet does not seem to require fragmentation, and fragments
+the packet if fragmentation is required. See <code>ip(7)</code> for more details, refer
+to <code>IP_MTU_DISCOVER</code>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>To clarify, routers must decrement the TTL before sending it
+onwards. If the TTL is zero after decrementing, the router must drop the
+packet.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
+<p>Here, the UDP header checksum is invalid, due to
+<a href=https://www.kernel.org/doc/html/latest/networking/checksum-offloads.html>checksum offloading</a>. This offloads the calculation
+of checksums to the NIC, improving performance, so the system does not bother
+calculating the correct checksum. To check whether a checksum is valid in
+<code>tshark</code>, use the <code>-o udp.check_checksum:TRUE</code> option.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer>
+<hr>
+<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
+Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
+</footer></body></html>

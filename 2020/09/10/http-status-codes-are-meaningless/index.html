@@ -1,0 +1,51 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
+<meta name=msapplication-TileColor content="#2d89ef">
+<meta name=theme-color content="#282a36">
+<title>
+HTTP Status Codes are Meaningless - nevi.dev
+</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
+</head><body>
+<main>
+<article>
+<header>
+<h1>HTTP Status Codes are Meaningless</h1><time datetime=2020-09-10>2020-09-10</time>
+on <a href=/>nevi.dev</a>
+</header><p>This decision diagram may be useful, but the fact that it is required at all is
+ridiculous.</p><p><a href=https://github.com/for-GET/http-decision-diagram/raw/master/httpdd.png><img src=decision-diagram.png alt="http decision diagram"></a></p><p>Instead, we should just use the generic <code>x00</code> status codes for all responses.</p><blockquote>
+<p>Note: I am talking about &ldquo;RESTful&rdquo; APIs here. Most of this does not apply to
+regular websites serving browser traffic.</p></blockquote><h2 id=for-successes-2xx>For successes (2xx)</h2><p>There is no real difference, from an API consumer&rsquo;s perspective, between a <code>200 OK</code> and a <code>202 Accepted</code>. The client knows which endpoint it is calling; it
+knows that this particular endpoint handles requests asynchronously. The same
+applies to the <code>201 Created</code> status code.</p><p><code>204 No Content</code> is a bit different, as in this response is not allowed to
+contain a response body, according to the <a href=https://tools.ietf.org/html/rfc7231#section-6.3.5>HTTP/1.1 spec</a>. The
+problem is that some web frameworks allow sending a body with this status code,
+leading to problems when the response is processed by some component that does
+not expect a response body. We can avoid this problem entirely by sending a
+<code>200 OK</code> response with <code>Content-Length: 0</code> when sending a response with no
+payload.</p><h2 id=for-client-failures-4xx>For client failures (4xx)</h2><p>In most cases, the status code, by itself, is not enough to understand what
+caused the error. A <code>405 Method Not Allowed</code> needs to specify which methods are
+allowed, <code>413 Payload Too Large</code> still needs to include an acceptable size to be
+useful.</p><p>However, if we are going to send good error messages anyway, the status code
+provides no real value. A well-written API consumer would ignore the specific
+status code and instead parse the response body to determine which error
+occurred, and why.</p><p>Furthermore, providing a status code may encourage clients to create half-baked
+solutions that try to guess what caused the error by only looking at the status
+code, instead of properly reading the response body.</p><p>All in all, for most client errors, we should return a generic <code>400 Bad Request</code>, along with a descriptive error message (and, if possible, a
+documented, unique string that allows programmatic processing of said error).</p><h2 id=for-server-failures-5xx>For server failures (5xx)</h2><p>For server-side errors, the API consumer cannot do much. In fact, providing
+additional information to the client may be a security concern, as it reveals
+server-side implementation details to potential attackers.</p><p>For most server-side errors, a <code>500 Internal Server Error</code> is all a client needs
+to know, along with a request ID such that it can be sent to the API developers
+to aid in debugging whatever caused the error.</p><h2 id=conclusion>Conclusion</h2><p>It really is that simple, an API only ever needs to return three error codes:
+<code>200 OK</code>, <code>400 Bad Request</code>, and <code>500 Internal Server Error</code>. We <a href=https://stackoverflow.com/q/1959947>do</a> <a href=https://stackoverflow.com/q/2342579>not</a> <a href=https://stackoverflow.com/q/3050518>need</a> <a href=https://stackoverflow.com/q/3290182>to</a>
+<a href=https://stackoverflow.com/q/3825990>fuss</a> <a href=https://stackoverflow.com/q/16133923>about</a> which status code to use.</p></article></main><footer>
+<hr>
+<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
+Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
+</footer></body></html>

@@ -1,0 +1,71 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
+<meta name=msapplication-TileColor content="#2d89ef">
+<meta name=theme-color content="#282a36">
+<title>
+Going Deeper - IP Packets - nevi.dev
+</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
+</head><body>
+<main>
+<article>
+<header>
+<h1>Going Deeper - IP Packets</h1><time datetime=2020-11-25>2020-11-25</time>
+on <a href=/>nevi.dev</a>
+</header><p>I wanted to learn about TCP, but ended up studying IPv{4,6} instead, so I&rsquo;m
+writing about what I learned. I hope this to be a series of posts where I
+write about my learnings about lower-level networking concepts.</p><h2 id=ip-addresses>IP Addresses</h2><p>Often called &ldquo;IP"s, these numbers identify a host on the internet. The two
+internet protocol versions, IPv4 and IPv6, have their own address formats.</p><ul>
+<li><strong>IPv4</strong>: IPv4 addresses are 32 bits (4 bytes) long, totaling a bit over four million
+distinct addresses. An IPv4 address is often written in its dotted-quad form,
+such as <code>1.2.3.4</code> and <code>255.255.255.255</code>.</li><li><strong>IPv6</strong>: IPv6 addresses are 128 bits (16 bytes) long, totalling
+infinite<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> distinct addresses.</li></ul><p>These addresses would be too long to represent in the same way as IPv4
+addresses, so they use hex digits, divided into eight groups of 4 characters
+each: <code>2001:0db8:1234:4568:90ab:cdef:dead:beef</code>.</p><p>Even then, these addresses are too long to fully list every time, so leading
+zeroes and groups of zeroes are omitted, so
+<code>2001:0db8:0000:0000:0000:0000:0000:0001</code> becomes <code>2001:db8::1</code>.</p><h2 id=ip-packet-headers>IP Packet Headers</h2><p>The <a href=https://en.wikipedia.org/wiki/Internet_protocol_suite#Link_layer>link layer</a> is <em>magic</em>, and can transport data frames
+across devices connected directly to each other. Here, the internet layer
+introduces the concept of packets that consist of a packet header and the
+payload.</p><p>The IP packet header<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup> contains the following fields, among
+others:</p><ul>
+<li>IP version (4 or 6)</li><li>Source address</li><li>Destination address</li><li>Protocol number</li></ul><p>The last field, the <a href=https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml>protocol number</a>, identifies which protocol
+data is contained in the IP packet, such as TCP, UDP, and ICMP.</p><p>The IP header contains all the information required to route the packet from
+the source to its destination without having to inspect the packet
+payload<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>, and only the receiving host will have to
+inspect it.</p><h2 id=ip-fragmentation>IP Fragmentation</h2><p>The <a href=https://en.wikipedia.org/wiki/Internet_protocol_suite#Link_layer>link layer</a> is <em>not</em> actually magic, and has some
+limitations. One such limitation is the maximum size of the IP packets send over
+those links.</p><p>The upper limit on the packet size is called the message transmission unit, or
+<strong>MTU</strong> for short. When a host needs to transmit a packet that is larger than
+allowed by the MTU, the packet needs to be fragmented.</p><p>Packet fragmentation works by chopping up the packet payload such that each
+chunk will fit in an MTU-sized packet, and sending each packet separately,
+noting the fact that the packet was fragmented in the packet header. In theory,
+this allows intermediate routers to simply pass fragmented packets along, and
+only the destination host needs to reassemble the packet (a relatively expensive
+operation)<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup>.</p><p>However, due to <a href=https://blog.cloudflare.com/ip-fragmentation-is-broken/>various</a> <a href=https://tools.ietf.org/html/rfc8900>reasons</a>, IP packet
+fragmentation is fragile, broken, and overall terrible. The general
+recommendation is to avoid relying on fragmentation and reassembly to work
+properly.</p><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>Actually, a bit over
+340 billion
+billion billion billion addresses.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>For reference:
+IPv4: <a href=https://tools.ietf.org/html/rfc791#section-3.1>RFC 791 section 3.1</a>,
+IPv6: <a href=https://tools.ietf.org/html/rfc8200#section-3>RFC 8200 section 3</a>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
+<p>Though some systems may have to inspect it anyway,
+such as firewalls and NAT routers.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote>
+<p>At first glance, reassembly may seem like a simple
+enough operation. Take into account that packets may be reordered or outright
+dropped, however.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer>
+<hr>
+<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
+Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
+</footer></body></html>
