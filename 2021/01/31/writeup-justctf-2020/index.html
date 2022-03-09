@@ -91,7 +91,11 @@ promising. Execute the PDF document as a ruby script, and download the resulting
 https://www.youtube.com/watch?v=VVdmmN0su6E#t=11m32s
 
 Maybe try running `./mutool draw -r 300 -o rendered.png` on this PDF
-</code></pre><p>$ docker run -ti &ndash;rm -w /workdir/ &ndash;mount type=bind,source="$PWD",target=/workdir ubuntu:bionic ./mutool</p><pre tabindex=0><code></code></pre><p>Follow the instructions, and we get a <code>rendered.png</code>:</p><p><img src=pdf/rendered.png alt=rendered.png></p><p>Googling the terms found in the image, we are led to a
+
+```
+$ docker run -ti --rm -w /workdir/ --mount type=bind,source=&#34;$PWD&#34;,target=/workdir ubuntu:bionic ./mutool
+```
+</code></pre><p>Follow the instructions, and we get a <code>rendered.png</code>:</p><p><img src=pdf/rendered.png alt=rendered.png></p><p>Googling the terms found in the image, we are led to a
 <a href=https://blog.didierstevens.com/2008/05/19/pdf-stream-objects/>blog post</a>
 detailing PDF stream objects and how they are formatted.</p><p>Alright, let&rsquo;s <a href=pdf/extract_streams.py>extract</a> all the stream objects from the
 PDF. Most of the objects are compressed, so we also
