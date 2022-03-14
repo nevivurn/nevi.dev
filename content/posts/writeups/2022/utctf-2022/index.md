@@ -1,7 +1,6 @@
 +++
 title = "Writeup: UTCTF 2022"
-#publishDate = 2021-01-31T19:00:00+00:00
-draft = true
+publishDate = 2022-03-14T00:21:31+00:00
 math = true
 +++
 
