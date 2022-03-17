@@ -1,25 +1,5 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
-<link rel=manifest href=/site.webmanifest>
-<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
-<meta name=msapplication-TileColor content="#2d89ef">
-<meta name=theme-color content="#282a36">
-<title>
-JWTs And Their Pitfalls - nevi.dev
-</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
-</head><body>
-<main>
-<article>
-<header>
-<h1>JWTs And Their Pitfalls</h1><time datetime=2021-03-14>2021-03-14</time>
-on <a href=/>nevi.dev</a>
-</header><blockquote>
-<p>This piece was originally posted on the <a href=https://medium.com/mathpresso/jwts-and-their-pitfalls-ffe8c9dba927>Mathpresso Team Blog</a>.</p></blockquote><p>JSON Web Tokens, or JWTs<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> for short, are self-contained tokens
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36><meta name=msapplication-TileColor content="#2d89ef"><meta name=theme-color content="#282a36"><title>JWTs And Their Pitfalls - nevi.dev</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI="></head><body><main><article><header><h1>JWTs And Their Pitfalls</h1><time datetime=2021-03-14>2021-03-14</time>
+on <a href=/>nevi.dev</a></header><blockquote><p>This piece was originally posted on the <a href=https://medium.com/mathpresso/jwts-and-their-pitfalls-ffe8c9dba927>Mathpresso Team Blog</a>.</p></blockquote><p>JSON Web Tokens, or JWTs<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> for short, are self-contained tokens
 that are often used in the context of authentication and authorization. In this
 post, I will explain how JWTs work, what problems they are meant to solve, and
 common pitfalls to avoid when implementing a service that uses JWTs.</p><h2 id=a-crash-course-on-jwts>A Crash Course on JWTs</h2><p>A JWT is just a JSON object, base64-encoded<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup> and signed. They
@@ -64,8 +44,7 @@ user. The token may look like this:</p><pre tabindex=0><code>{
 </code></pre><p>The user then sends this signed token to service B, which verifies the token
 using the public key identified by the ID &ldquo;2021-02&rdquo;. If the verification
 succeeds, service B can be certain that the requester is the user &ldquo;nevivurn&rdquo;,
-without having to consult service A or a shared database.</p><hr>
-<h2 id=common-pitfalls>Common Pitfalls</h2><p>JWTs can be very secure if implemented and used properly. However, we must be
+without having to consult service A or a shared database.</p><hr><h2 id=common-pitfalls>Common Pitfalls</h2><p>JWTs can be very secure if implemented and used properly. However, we must be
 careful to avoid these common pitfalls when implementing a system that uses JWTs
 for security.</p><h3 id=accepting-alg-none>Accepting <code>"alg": "none"</code></h3><p>The JWT standard allows the use of the <code>none</code> algorithm for signature. This
 algorithm does&mldr; you guessed it, nothing. It is insecure, and should never be
@@ -131,8 +110,7 @@ performance, and usability before deciding to use refresh tokens.</p><h2 id=fund
 fundamental problem in the design of JWTs as a security standard.</p><p>Make no mistake; JWTs can be used safely and securely if implemented correctly.
 The flaw lies in the vastness of the configuration space and the flexibility of
 the standard, which is not a desirable property if we want a secure-by-default
-system.</p><h3 id=too-many-choices>Too Many Choices</h3><blockquote>
-<p>Most programmers using cryptographic libraries are not expert cryptographic
+system.</p><h3 id=too-many-choices>Too Many Choices</h3><blockquote><p>Most programmers using cryptographic libraries are not expert cryptographic
 security evaluators. [&mldr;] There is a long history of these programmers and
 users making poor choices of cryptographic primitives, such as MD5 and 512-bit
 RSA, years after cryptographers began issuing warnings about the security of
@@ -149,32 +127,18 @@ implementations.</p><h3 id=handling-non-validated-inputs>Handling Non-Validated 
 essentially requires the processing of the token header before any validation,
 as the header itself contains information on how to validate the token as a
 whole. This fundamental design flaw leads to issues such as the <code>"alg": "none"</code>
-and the key confusion attacks mentioned above, <a href=https://tools.ietf.org/html/rfc8725#section-3.10>among others</a>.</p><hr>
-<h2 id=wrap-up>Wrap-Up</h2><p>JWTs are a powerful solution to the problem of authentication and authorization
+and the key confusion attacks mentioned above, <a href=https://tools.ietf.org/html/rfc8725#section-3.10>among others</a>.</p><hr><h2 id=wrap-up>Wrap-Up</h2><p>JWTs are a powerful solution to the problem of authentication and authorization
 at scale in microservices. However, the pitfalls created by the fundamental
 design flaws force us to be very careful in our implementation and use of these
 tokens. As the lack of widely-supported, standard alternatives leaves us with no
 choice other than to use JWTs, we have to become familiar with the sharp edges
-of JWTs.</p><h2 id=references>References</h2><ul>
-<li><a href=https://tools.ietf.org/html/rfc7519>RFC7519: JSON Web Token (JWT)</a></li><li><a href=https://tools.ietf.org/wg/jose/>JOSE Working Group</a>
-<ul>
-<li><a href=https://tools.ietf.org/html/rfc7515/>RFC7515: JSON Web Signature (JWS)</a></li><li><a href=https://tools.ietf.org/html/rfc7518/>RFC7518: JSON Web Algorithms (JWA)</a></li></ul></li><li><a href=https://tools.ietf.org/html/rfc8725>RFC8725: JSON Web Token Best Current Practices</a></li></ul><section class=footnotes role=doc-endnotes>
-<hr>
-<ol>
-<li id=fn:1 role=doc-endnote>
-<p>Pronounced &ldquo;jot&rdquo;, as officially suggested by <a href=https://tools.ietf.org/html/rfc7519#section-1>the
-standard</a>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
-<p>Specifically, it is base64url-encoded with no padding.
+of JWTs.</p><h2 id=references>References</h2><ul><li><a href=https://tools.ietf.org/html/rfc7519>RFC7519: JSON Web Token (JWT)</a></li><li><a href=https://tools.ietf.org/wg/jose/>JOSE Working Group</a><ul><li><a href=https://tools.ietf.org/html/rfc7515/>RFC7515: JSON Web Signature (JWS)</a></li><li><a href=https://tools.ietf.org/html/rfc7518/>RFC7518: JSON Web Algorithms (JWA)</a></li></ul></li><li><a href=https://tools.ietf.org/html/rfc8725>RFC8725: JSON Web Token Best Current Practices</a></li></ul><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>Pronounced &ldquo;jot&rdquo;, as officially suggested by <a href=https://tools.ietf.org/html/rfc7519#section-1>the
+standard</a>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>Specifically, it is base64url-encoded with no padding.
 base64url is similar to regular base64, but the URL-unfriendly characters
 <code>"+"</code> and <code>"/"</code> are replaced with <code>"-"</code> and <code>"_"</code>, respectively. Note that the
 <code>"+"</code> and <code>"/"</code> appear in base64-encoded data (assuming ASCII-only input) only
 if the input contained a <code>"?"</code> or <code>"~"</code> at specific locations. This means that
 if you are in a hurry, you can usually inspect the ASCII-only sections with a
-quick <code>base64 -d</code>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
-<p>In some cases, this attack may be possible even when
+quick <code>base64 -d</code>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>In some cases, this attack may be possible even when
 the public key is not available to attackers, as shown in <a href=https://blog.silentsignal.eu/2021/02/08/abusing-jwt-public-keys-without-the-public-key/>this recent blog
-post</a>.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer>
-<hr>
-<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
-Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
-</footer></body></html>
+post</a>.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer><hr><small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small></footer></body></html>

@@ -1,24 +1,5 @@
-<!doctype html><html lang=en>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png>
-<link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png>
-<link rel=manifest href=/site.webmanifest>
-<link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36>
-<meta name=msapplication-TileColor content="#2d89ef">
-<meta name=theme-color content="#282a36">
-<title>
-Going Deeper - UDP - nevi.dev
-</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI=">
-</head><body>
-<main>
-<article>
-<header>
-<h1>Going Deeper - UDP</h1><time datetime=2020-11-29>2020-11-29</time>
-on <a href=/>nevi.dev</a>
-</header><p>I wanted to learn about TCP, but it seemed to be too complicated, so I decided
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36><meta name=msapplication-TileColor content="#2d89ef"><meta name=theme-color content="#282a36"><title>Going Deeper - UDP - nevi.dev</title><link rel=stylesheet href="/styles.min.3ccabd29c465dc8134033adc11b0759d36344d8cc9a2e2c84a26673954537ae2.css" integrity="sha256-PMq9KcRl3IE0AzrcEbB1nTY0TYzJouLISiZnOVRTeuI="></head><body><main><article><header><h1>Going Deeper - UDP</h1><time datetime=2020-11-29>2020-11-29</time>
+on <a href=/>nevi.dev</a></header><p>I wanted to learn about TCP, but it seemed to be too complicated, so I decided
 to learn about UDP instead for now.</p><h2 id=udp-datagrams>UDP Datagrams</h2><p>User Datagram Protocol, or <strong>UDP</strong>, is a simple, stateless, and
 connectionless protocol for sending datagrams between internet hosts.</p><p>The protocol is so simple that its <a href=https://tools.ietf.org/html/rfc768>specification</a> fits in
 just three pages. For reference, <a href=https://tools.ietf.org/html/rfc793>RFC793</a>, which describes TCP, is 85
@@ -111,24 +92,13 @@ destination ports, datagram length, and the
 checksum<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>.</p><pre tabindex=0><code>0000  68 65 6c 6c 6f                                    hello
     Data: 68656c6c6f
     [Length: 5]
-</code></pre><p>Finally, we have the all-important application payload.</p><h2 id=references>References</h2><ul>
-<li><a href=https://tools.ietf.org/html/rfc768>RFC768</a>: User Datagram Protocol</li></ul><section class=footnotes role=doc-endnotes>
-<hr>
-<ol>
-<li id=fn:1 role=doc-endnote>
-<p>By default, Linux sets the DF bit (and performs PMTU
+</code></pre><p>Finally, we have the all-important application payload.</p><h2 id=references>References</h2><ul><li><a href=https://tools.ietf.org/html/rfc768>RFC768</a>: User Datagram Protocol</li></ul><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>By default, Linux sets the DF bit (and performs PMTU
 discovery) if the packet does not seem to require fragmentation, and fragments
 the packet if fragmentation is required. See <code>ip(7)</code> for more details, refer
-to <code>IP_MTU_DISCOVER</code>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
-<p>To clarify, routers must decrement the TTL before sending it
+to <code>IP_MTU_DISCOVER</code>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>To clarify, routers must decrement the TTL before sending it
 onwards. If the TTL is zero after decrementing, the router must drop the
-packet.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
-<p>Here, the UDP header checksum is invalid, due to
+packet.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>Here, the UDP header checksum is invalid, due to
 <a href=https://www.kernel.org/doc/html/latest/networking/checksum-offloads.html>checksum offloading</a>. This offloads the calculation
 of checksums to the NIC, improving performance, so the system does not bother
 calculating the correct checksum. To check whether a checksum is valid in
-<code>tshark</code>, use the <code>-o udp.check_checksum:TRUE</code> option.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer>
-<hr>
-<small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>
-Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small>
-</footer></body></html>
+<code>tshark</code>, use the <code>-o udp.check_checksum:TRUE</code> option.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer><hr><small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small></footer></body></html>
