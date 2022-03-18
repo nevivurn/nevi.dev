@@ -28,6 +28,6 @@ footer {
 }
 
 .katex-display > .katex {
-	overflow-x: scroll;
+	overflow-x: auto;
 	overflow-y: hidden;
 }
