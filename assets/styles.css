@@ -27,7 +27,22 @@ footer {
 	padding: 2rem 0;
 }
 
+/* Math display scrolling */
 .katex-display > .katex {
 	overflow-x: auto;
 	overflow-y: hidden;
+}
+
+/* Highlight code and math */
+.katex-display, pre {
+	padding: 1em;
+	background-color: #eeeeee;
+}
+code {
+	background-color: #eeeeee;
+	padding: 0 1ch;
+}
+pre code {
+	/* Remove padding if in block */
+	padding: 0;
 }
