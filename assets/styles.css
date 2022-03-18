@@ -26,3 +26,8 @@ footer {
 	text-align: center;
 	padding: 2rem 0;
 }
+
+.katex-display > .katex {
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
