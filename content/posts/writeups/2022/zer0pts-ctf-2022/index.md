@@ -1,7 +1,6 @@
 +++
 title = "Writeup: zer0pts CTF 2022"
 publishDate = 2022-03-20T12:00:00+00:00
-math = true
 +++
 
 - Website: https://2022.ctf.zer0pts.com/
