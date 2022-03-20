@@ -1,0 +1,74 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#282a36><meta name=msapplication-TileColor content="#2d89ef"><meta name=theme-color content="#282a36"><title>Writeup: zer0pts CTF 2022 - nevi.dev</title><link rel=stylesheet href="/styles.min.56f9401e272b3636f5494300a42915065ef800caab036fc1a3dbf467ec31ae3e.css" integrity="sha256-VvlAHicrNjb1SUMApCkVBl74AMqrA2/Bo9v0Z+wxrj4="><link rel=stylesheet href=/dist/katex/katex.min.4d3844b51f976a58562a47c5dfcdd82ceac8e7434635e22aaf34beab4f1a7eb6.css integrity="sha256-TThEtR+XalhWKkfF383YLOrI50NGNeIqrzS+q08afrY="><script defer src=/dist/katex/katex.min.41d312281727d87cb0ce1fe496e07f5fe080f881a50594d4e6efe22c013eb2c6.js integrity="sha256-QdMSKBcn2Hywzh/kluB/X+CA+IGlBZTU5u/iLAE+ssY="></script>
+<script defer src=/dist/katex/contrib/auto-render.min.cb7f4ca60ed5dc3e258415f8c7a3b46d4a93578a52adf83011f18a7f190e7602.js integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI=" onload='renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})'></script></head><body><main><article><header><h1>Writeup: zer0pts CTF 2022</h1><time datetime=2022-03-20>2022-03-20</time>
+on <a href=/>nevi.dev</a></header><ul><li>Website: <a href=https://2022.ctf.zer0pts.com/>https://2022.ctf.zer0pts.com/</a></li><li>CTFTime: <a href=https://ctftime.org/event/1555>https://ctftime.org/event/1555</a></li></ul><h2 id=anti-fermat-crypto-warmup>Anti-Fermat (crypto, warmup)</h2><blockquote><p>I invented Anti-Fermat Key Generation for RSA cipher since I&rsquo;m scared of the
+<a href="https://en.wikipedia.org/wiki/Fermat's_factorization_method">Fermat&rsquo;s Factorization Method</a>.</p><p><a href=anti-fermat/anti_fermat_b8b9ddc83b728c86db324bd10da2242b.tar.gz>files</a></p></blockquote><p>This task implements textbook RSA, but with some special key generation:</p><pre tabindex=0><code># Anti-Fermat Key Generation
+p = getStrongPrime(1024)
+q = next_prime(p ^ ((1&lt;&lt;1024)-1))
+n = p * q
+e = 65537
+</code></pre><p>It generates a (strong) 1024-bit prime <code>p</code> as usual. Then it generates <code>q</code> as
+the first prime number that follows the binary inverse of <code>p</code>.</p><p>This means that every bit posistion (except for some low-order bits) will be set
+in exactly one of <code>p</code> and <code>q</code> (that is, <code>p XNOR q</code> is zero except for some
+low-order bits). Furthermore, since a bit can only be set in one of <code>p</code> or <code>q</code>,
+assuming <code>p > q</code> (which implies that <code>p</code> has its 1024th bit set), the order for
+all possible values of <code>p * q</code> is the same as the order of the values of <code>q</code>.</p><p>In other words, if we &ldquo;move&rdquo; a bit from <code>p</code> to <code>q</code>, we get a larger number. This
+lets us leak each bit position (except for some low-order bits, but we can brute
+force those).</p><p>We start off with <code>p</code> as all 1&rsquo;s (except for some 20 low-order bits) and <code>q</code> as
+zero.</p><pre tabindex=0><code>p = ((1&lt;&lt;1024)-1) ^ ((1&lt;&lt;20)-1)
+q = 0
+</code></pre><p>Then, for each bit position from 1023 down to 20, we check if the value of <code>(p ^ 1&lt;&lt;bit) * (q ^ 1&lt;&lt;bit)</code> is smaller than the challenge <code>n</code>. If the product is
+smaller than <code>n</code>, then we &ldquo;move&rdquo; the bit from <code>p</code> to <code>q</code>).</p><pre tabindex=0><code>for i in range(1022, 19, -1):
+    cur = 1&lt;&lt;i
+    if (p^cur) * (q^cur) &lt; n:
+        p ^= cur
+        q ^= cur
+</code></pre><p>After this, we can be confident we have the top 1024-20 bits of <code>p</code>. Run an
+exhaustive search for the remaining 20 bits, and decrypt <code>c</code> to obtain the flag.</p><pre tabindex=0><code>while n%p != 0:
+    p = gmpy2.next_prime(p)
+q = n//p
+
+d = gmpy2.invert(0x10001, (p-1) * (q-1))
+print(long_to_bytes(pow(c, d, n)).decode())
+</code></pre><pre tabindex=0><code>$ time ./solve.py
+p = 153456316755201256456077648680293404551531181234956990242779099773886170192558263224753907666532907469313954439789378399786631549347700474488574017322863270205683350905558827922567834954626909259763623105532668671134932118937640401627676913585506492102157561689678418157863742997375967679975824876706628973287
+q = 26312996731030334316852870398609068810266516659273667030650981383846505612942699907954569655874628551806159440082014957872158219466716148004273413316610854172084542519306657353734384646619184859689459846552337097703218563404822479846236196955320745061192948994907880082083502941103748624859531452917595165959
+Good job! Here is the flag:
++-----------------------------------------------------------+
+| zer0pts{F3rm4t,y0ur_m3th0d_n0_l0ng3r_w0rks.y0u_4r3_f1r3d} |
++-----------------------------------------------------------+
+
+real    0m14.728s
+user    0m14.724s
+sys     0m0.004s
+</code></pre><p><a href=anti-fermat/solve.py>solve.py</a></p><h2 id=mathhash-misc>MathHash (misc)</h2><blockquote><p>I invented a very fast yet secure hash algorithm!</p><p><code>nc misc.ctf.zer0pts.com 10001</code></p><p><a href=mathhash/mathhash_3ec57fae465bf3e9c54a3b9782ce8ae6.tar.gz>files</a></p></blockquote><p>The server has a hash function <code>MathHash</code>, which is fed with <code>flag + input</code>.
+Thus, we need to leak information about the flag in the hash output.</p><p>The hash function in question is like so:</p><pre tabindex=0><code>def MathHash(m):
+    hashval = 0
+    for i in range(len(m)-7):
+        c = struct.unpack(&#39;&lt;Q&#39;, m[i:i+8])[0]
+        t = math.tan(c * math.pi / (1&lt;&lt;64))
+        hashval ^= struct.unpack(&#39;&lt;Q&#39;, struct.pack(&#39;&lt;d&#39;, t))[0]
+    return hashval
+</code></pre><p>The hash function takes <code>tan(pi * c/1&lt;&lt;64)</code> for a rolling 8-byte window (taken
+as little-endian 64-bit unsigned integer) and XORs the resulting double into the
+hash output.</p><p>Since the 8-byte window is unpacked in little-endian, the last byte in the
+window is most significant. The <code>tan</code> result is XORed such that the most
+significant byte in the double is XORed into the most significant byte of the
+output.</p><p>For reference, a double is stored in memory like so<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>:</p><p><img src=https://upload.wikimedia.org/wikipedia/commons/a/a9/IEEE_754_Double_Floating_Point_Format.svg alt="Double-precision floating point memory"></p><p>Now, with lots of trial and error, we discover that the last byte of each 8-byte
+window is correlated with the most-significant byte of the <code>tan</code> output. In
+fact, we notice that for the range of values we need to deal with, exactly one
+of the 6th or 7th bit of the most-significant byte in the <code>tan</code> output is set. A
+notable exception is when the input is all zeroes, in which case the <code>tan</code>
+output is also zero.</p><p>This means that we can look at the 6th and 7th bits changing in the hash output
+to check whether we successfully guessed the hash output.</p><p>Starting with the 7 known bytes (<code>zer0pts</code>), we make a guess for the next
+character, and send an input such that it sums to 0 with the flag. If we guessed
+correctly, exactly one of the 6th or 7th bits should have flipped. Repeat this
+until we obtain the entire flag.</p><pre tabindex=0><code>$ ./solve.py
+[+] Opening connection to misc.ctf.zer0pts.com on port 10001: Done
+[*] zer0pts{
+[*] zer0pts{s
+[*] zer0pts{s1
+[...]
+[*] zer0pts{s1gn+|3xp^|fr4c.}
+[+] zer0pts{s1gn+|3xp^|fr4c.}
+[*] Closed connection to misc.ctf.zer0pts.com port 10001
+</code></pre><p><a href=mathhash/solve.py>solve.py</a></p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p><a href=https://en.wikipedia.org/wiki/Double-precision_floating-point_format>https://en.wikipedia.org/wiki/Double-precision_floating-point_format</a>&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer><hr><small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small></footer></body></html>
