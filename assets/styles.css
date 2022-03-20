@@ -53,3 +53,9 @@ blockquote {
 	margin-left: 0;
 	padding-left: 40px;
 }
+
+/* Center images in body */
+img {
+	margin: 0 auto;
+	display: block;
+}
