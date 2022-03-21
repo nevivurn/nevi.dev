@@ -11,7 +11,6 @@ disableKinds = [
 	"taxonomy",
 	"term",
 	"RSS",
-	"sitemap",
 ]
 [permalinks]
   posts = "/:year/:month/:day/:slug"
