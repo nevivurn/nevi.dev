@@ -92,13 +92,13 @@ destination ports, datagram length, and the
 checksum<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>.</p><pre tabindex=0><code>0000  68 65 6c 6c 6f                                    hello
     Data: 68656c6c6f
     [Length: 5]
-</code></pre><p>Finally, we have the all-important application payload.</p><h2 id=references>References</h2><ul><li><a href=https://tools.ietf.org/html/rfc768>RFC768</a>: User Datagram Protocol</li></ul><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>By default, Linux sets the DF bit (and performs PMTU
+</code></pre><p>Finally, we have the all-important application payload.</p><h2 id=references>References</h2><ul><li><a href=https://tools.ietf.org/html/rfc768>RFC768</a>: User Datagram Protocol</li></ul><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>By default, Linux sets the DF bit (and performs PMTU
 discovery) if the packet does not seem to require fragmentation, and fragments
 the packet if fragmentation is required. See <code>ip(7)</code> for more details, refer
-to <code>IP_MTU_DISCOVER</code>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>To clarify, routers must decrement the TTL before sending it
+to <code>IP_MTU_DISCOVER</code>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>To clarify, routers must decrement the TTL before sending it
 onwards. If the TTL is zero after decrementing, the router must drop the
-packet.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>Here, the UDP header checksum is invalid, due to
+packet.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3><p>Here, the UDP header checksum is invalid, due to
 <a href=https://www.kernel.org/doc/html/latest/networking/checksum-offloads.html>checksum offloading</a>. This offloads the calculation
 of checksums to the NIC, improving performance, so the system does not bother
 calculating the correct checksum. To check whether a checksum is valid in
-<code>tshark</code>, use the <code>-o udp.check_checksum:TRUE</code> option.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></article></main><footer><hr><small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small></footer></body></html>
+<code>tshark</code>, use the <code>-o udp.check_checksum:TRUE</code> option.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></article></main><footer><hr><small><a href=mailto:nevivurn@nevi.dev>email</a> | <a href=https://github.com/nevivurn>github</a><br>Content on this site is <a href=https://creativecommons.org/licenses/by/4.0/>CC-BY-4.0</a>.</small></footer></body></html>
