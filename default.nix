@@ -1,9 +1,9 @@
-{ stdenv, callPackage, nodejs, hugo, ... }:
+{ stdenvNoCC, callPackage, nodejs, hugo, ... }:
 
 let
   nodeDependencies = (callPackage ./node.nix { inherit nodejs; }).nodeDependencies;
 in
-  stdenv.mkDerivation rec {
+  stdenvNoCC.mkDerivation rec {
     name = "nevi-dev";
     src = ./.;
     nativeBuildInputs = [ nodejs ];
