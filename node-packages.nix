@@ -76,13 +76,13 @@ let
         sha512 = "1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==";
       };
     };
-    "autoprefixer-10.4.11" = {
+    "autoprefixer-10.4.12" = {
       name = "autoprefixer";
       packageName = "autoprefixer";
-      version = "10.4.11";
+      version = "10.4.12";
       src = fetchurl {
-        url = "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.11.tgz";
-        sha512 = "5lHp6DgRodxlBLSkzHOTcufWFflH1ewfy2hvFQyjrblBFlP/0Yh4O/Wrg4ow8WRlN3AAUFFLAQwX8hTptzqVHg==";
+        url = "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.12.tgz";
+        sha512 = "WrCGV9/b97Pa+jtwf5UGaRjgQIg7OK3D06GnoYoZNcG1Xb8Gt3EfuKjlhh9i/VtT16g6PYjZ69jdJ2g8FxSC4Q==";
       };
     };
     "binary-extensions-2.2.0" = {
@@ -112,13 +112,13 @@ let
         sha512 = "CBHJJdDmgjl3daYjN5Cp5kbTf1mUhZoS+beLklHIvkOWscs83YAhLlF3Wsh/lciQYAcbBJgTOD44VtG31ZM4Hw==";
       };
     };
-    "caniuse-lite-1.0.30001407" = {
+    "caniuse-lite-1.0.30001410" = {
       name = "caniuse-lite";
       packageName = "caniuse-lite";
-      version = "1.0.30001407";
+      version = "1.0.30001410";
       src = fetchurl {
-        url = "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001407.tgz";
-        sha512 = "4ydV+t4P7X3zH83fQWNDX/mQEzYomossfpViCOx9zHBSMV+rIe3LFqglHHtVyvNl1FhTNxPxs3jei82iqOW04w==";
+        url = "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001410.tgz";
+        sha512 = "QoblBnuE+rG0lc3Ur9ltP5q47lbguipa/ncNMyyGuqPk44FxbScWAeEO+k5fSQ8WekdAK4mWqNs1rADDAiN5xQ==";
       };
     };
     "chokidar-3.5.3" = {
@@ -184,13 +184,13 @@ let
         sha512 = "WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==";
       };
     };
-    "electron-to-chromium-1.4.255" = {
+    "electron-to-chromium-1.4.258" = {
       name = "electron-to-chromium";
       packageName = "electron-to-chromium";
-      version = "1.4.255";
+      version = "1.4.258";
       src = fetchurl {
-        url = "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.255.tgz";
-        sha512 = "H+mFNKow6gi2P5Gi2d1Fvd3TUEJlB9CF7zYaIV9T83BE3wP1xZ0mRPbNTm0KUjyd1QiVy7iKXuIcjlDtBQMiAQ==";
+        url = "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.258.tgz";
+        sha512 = "vutF4q0dTUXoAFI7Vbtdwen/BJVwPgj8GRg/SElOodfH7VTX+svUe62A5BG41QRQGk5HsZPB0M++KH1lAlOt0A==";
       };
     };
     "emoji-regex-8.0.0" = {
@@ -747,11 +747,11 @@ let
       sources."ansi-styles-4.3.0"
       sources."anymatch-3.1.2"
       sources."array-union-3.0.1"
-      sources."autoprefixer-10.4.11"
+      sources."autoprefixer-10.4.12"
       sources."binary-extensions-2.2.0"
       sources."braces-3.0.2"
       sources."browserslist-4.21.4"
-      sources."caniuse-lite-1.0.30001407"
+      sources."caniuse-lite-1.0.30001410"
       sources."chokidar-3.5.3"
       sources."cliui-7.0.4"
       sources."color-convert-2.0.1"
@@ -759,7 +759,7 @@ let
       sources."commander-8.3.0"
       sources."dependency-graph-0.11.0"
       sources."dir-glob-3.0.1"
-      sources."electron-to-chromium-1.4.255"
+      sources."electron-to-chromium-1.4.258"
       sources."emoji-regex-8.0.0"
       sources."escalade-3.1.1"
       sources."fast-glob-3.2.12"
