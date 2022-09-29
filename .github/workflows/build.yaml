@@ -11,22 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Setup
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: npm
-      - uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: 0.101.0
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v17
 
-      # Build
-      - run: npm install
-      - run: hugo --minify
+      - run: nix flake check
+      - run: nix build
 
-      # Publish
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./result/public

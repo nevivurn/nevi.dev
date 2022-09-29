@@ -1,4 +1,5 @@
 {
+  "name": "nevi-dev",
   "dependencies": {
     "autoprefixer": "^10.4.0",
     "katex": "^0.15.1",
