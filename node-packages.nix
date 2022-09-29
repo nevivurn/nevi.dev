@@ -67,15 +67,6 @@ let
         sha512 = "P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==";
       };
     };
-    "array-union-3.0.1" = {
-      name = "array-union";
-      packageName = "array-union";
-      version = "3.0.1";
-      src = fetchurl {
-        url = "https://registry.npmjs.org/array-union/-/array-union-3.0.1.tgz";
-        sha512 = "1OvF9IbWwaeiM9VhzYXVQacMibxpXOMYVNIvMtKRyX9SImBXpKcFr8XvFDeEslCyuH/t6KRt7HEO94AlP8Iatw==";
-      };
-    };
     "autoprefixer-10.4.12" = {
       name = "autoprefixer";
       packageName = "autoprefixer";
@@ -112,13 +103,13 @@ let
         sha512 = "CBHJJdDmgjl3daYjN5Cp5kbTf1mUhZoS+beLklHIvkOWscs83YAhLlF3Wsh/lciQYAcbBJgTOD44VtG31ZM4Hw==";
       };
     };
-    "caniuse-lite-1.0.30001410" = {
+    "caniuse-lite-1.0.30001414" = {
       name = "caniuse-lite";
       packageName = "caniuse-lite";
-      version = "1.0.30001410";
+      version = "1.0.30001414";
       src = fetchurl {
-        url = "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001410.tgz";
-        sha512 = "QoblBnuE+rG0lc3Ur9ltP5q47lbguipa/ncNMyyGuqPk44FxbScWAeEO+k5fSQ8WekdAK4mWqNs1rADDAiN5xQ==";
+        url = "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001414.tgz";
+        sha512 = "t55jfSaWjCdocnFdKQoO+d2ct9C59UZg4dY3OnUlSZ447r8pUtIKdp0hpAzrGFultmTC+Us+KpKi4GZl/LXlFg==";
       };
     };
     "chokidar-3.5.3" = {
@@ -184,13 +175,13 @@ let
         sha512 = "WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==";
       };
     };
-    "electron-to-chromium-1.4.258" = {
+    "electron-to-chromium-1.4.268" = {
       name = "electron-to-chromium";
       packageName = "electron-to-chromium";
-      version = "1.4.258";
+      version = "1.4.268";
       src = fetchurl {
-        url = "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.258.tgz";
-        sha512 = "vutF4q0dTUXoAFI7Vbtdwen/BJVwPgj8GRg/SElOodfH7VTX+svUe62A5BG41QRQGk5HsZPB0M++KH1lAlOt0A==";
+        url = "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.268.tgz";
+        sha512 = "PO90Bv++vEzdln+eA9qLg1IRnh0rKETus6QkTzcFm5P3Wg3EQBZud5dcnzkpYXuIKWBjKe5CO8zjz02cicvn1g==";
       };
     };
     "emoji-regex-8.0.0" = {
@@ -292,13 +283,13 @@ let
         sha512 = "AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==";
       };
     };
-    "globby-12.2.0" = {
+    "globby-13.1.2" = {
       name = "globby";
       packageName = "globby";
-      version = "12.2.0";
+      version = "13.1.2";
       src = fetchurl {
-        url = "https://registry.npmjs.org/globby/-/globby-12.2.0.tgz";
-        sha512 = "wiSuFQLZ+urS9x2gGPl1H5drc5twabmm4m2gTR27XDFyjUHJUNsS8o/2aKyIF6IoBaR630atdher0XJ5g6OMmA==";
+        url = "https://registry.npmjs.org/globby/-/globby-13.1.2.tgz";
+        sha512 = "LKSDZXToac40u8Q1PQtZihbNdTYSNMuWe+K5l+oa6KgDzSvVrHXlJy40hUP522RjAIoNLJYBJi7ow+rbFpIhHQ==";
       };
     };
     "graceful-fs-4.2.10" = {
@@ -373,13 +364,13 @@ let
         sha512 = "5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==";
       };
     };
-    "katex-0.15.6" = {
+    "katex-0.16.2" = {
       name = "katex";
       packageName = "katex";
-      version = "0.15.6";
+      version = "0.16.2";
       src = fetchurl {
-        url = "https://registry.npmjs.org/katex/-/katex-0.15.6.tgz";
-        sha512 = "UpzJy4yrnqnhXvRPhjEuLA4lcPn6eRngixW7Q3TJErjg3Aw2PuLFBzTkdUb89UtumxjhHTqL3a5GDGETMSwgJA==";
+        url = "https://registry.npmjs.org/katex/-/katex-0.16.2.tgz";
+        sha512 = "70DJdQAyh9EMsthw3AaQlDyFf54X7nWEUIa5W+rq8XOpEk//w5Th7/8SqFqpvi/KZ2t6MHUj4f9wLmztBmAYQA==";
       };
     };
     "lilconfig-2.0.6" = {
@@ -499,22 +490,22 @@ let
         sha512 = "X9X9/WN3KIvY9+hNERUqX9gncsgBA25XaeR+jshHz2j8+sYyHktHw1JdKuMjeLpGktXidqDhA7b/qm1mrBDmgg==";
       };
     };
-    "postcss-cli-9.1.0" = {
+    "postcss-cli-10.0.0" = {
       name = "postcss-cli";
       packageName = "postcss-cli";
-      version = "9.1.0";
+      version = "10.0.0";
       src = fetchurl {
-        url = "https://registry.npmjs.org/postcss-cli/-/postcss-cli-9.1.0.tgz";
-        sha512 = "zvDN2ADbWfza42sAnj+O2uUWyL0eRL1V+6giM2vi4SqTR3gTYy8XzcpfwccayF2szcUif0HMmXiEaDv9iEhcpw==";
+        url = "https://registry.npmjs.org/postcss-cli/-/postcss-cli-10.0.0.tgz";
+        sha512 = "Wjy/00wBBEgQqnSToznxLWDnATznokFGXsHtF/3G8glRZpz5KYlfHcBW/VMJmWAeF2x49zjgy4izjM3/Wx1dKA==";
       };
     };
-    "postcss-load-config-3.1.4" = {
+    "postcss-load-config-4.0.1" = {
       name = "postcss-load-config";
       packageName = "postcss-load-config";
-      version = "3.1.4";
+      version = "4.0.1";
       src = fetchurl {
-        url = "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-3.1.4.tgz";
-        sha512 = "6DiM4E7v4coTE4uzA8U//WhtPwyhiim3eyjEMFCnUpzbrkK9wJHgKDT2mR+HbtSrd/NubVaYTOpSpjUl8NQeRg==";
+        url = "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-4.0.1.tgz";
+        sha512 = "vEJIc8RdiBRu3oRAI0ymerOn+7rPuMvRXslTvZUKZonDHFIczxztIyJ1urxM1x9JXEikvpWWTUUqal5j/8QgvA==";
       };
     };
     "postcss-normalize-10.0.1" = {
@@ -706,13 +697,13 @@ let
         sha512 = "0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==";
       };
     };
-    "yaml-1.10.2" = {
+    "yaml-2.1.1" = {
       name = "yaml";
       packageName = "yaml";
-      version = "1.10.2";
+      version = "2.1.1";
       src = fetchurl {
-        url = "https://registry.npmjs.org/yaml/-/yaml-1.10.2.tgz";
-        sha512 = "r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==";
+        url = "https://registry.npmjs.org/yaml/-/yaml-2.1.1.tgz";
+        sha512 = "o96x3OPo8GjWeSLF+wOAbrPfhFOGY0W00GNaxCDv+9hkcDJEnev1yh8S7pgHF0ik6zc8sQLuL8hjHjJULZp8bw==";
       };
     };
     "yargs-17.5.1" = {
@@ -746,12 +737,11 @@ let
       sources."ansi-regex-5.0.1"
       sources."ansi-styles-4.3.0"
       sources."anymatch-3.1.2"
-      sources."array-union-3.0.1"
       sources."autoprefixer-10.4.12"
       sources."binary-extensions-2.2.0"
       sources."braces-3.0.2"
       sources."browserslist-4.21.4"
-      sources."caniuse-lite-1.0.30001410"
+      sources."caniuse-lite-1.0.30001414"
       sources."chokidar-3.5.3"
       sources."cliui-7.0.4"
       sources."color-convert-2.0.1"
@@ -759,7 +749,7 @@ let
       sources."commander-8.3.0"
       sources."dependency-graph-0.11.0"
       sources."dir-glob-3.0.1"
-      sources."electron-to-chromium-1.4.258"
+      sources."electron-to-chromium-1.4.268"
       sources."emoji-regex-8.0.0"
       sources."escalade-3.1.1"
       sources."fast-glob-3.2.12"
@@ -771,7 +761,7 @@ let
       sources."get-caller-file-2.0.5"
       sources."get-stdin-9.0.0"
       sources."glob-parent-5.1.2"
-      sources."globby-12.2.0"
+      sources."globby-13.1.2"
       sources."graceful-fs-4.2.10"
       sources."ignore-5.2.0"
       sources."is-binary-path-2.1.0"
@@ -780,7 +770,7 @@ let
       sources."is-glob-4.0.3"
       sources."is-number-7.0.0"
       sources."jsonfile-6.1.0"
-      sources."katex-0.15.6"
+      sources."katex-0.16.2"
       sources."lilconfig-2.0.6"
       sources."merge2-1.4.1"
       sources."micromatch-4.0.5"
@@ -794,8 +784,8 @@ let
       sources."pify-2.3.0"
       sources."postcss-8.4.16"
       sources."postcss-browser-comments-4.0.0"
-      sources."postcss-cli-9.1.0"
-      sources."postcss-load-config-3.1.4"
+      sources."postcss-cli-10.0.0"
+      sources."postcss-load-config-4.0.1"
       sources."postcss-normalize-10.0.1"
       sources."postcss-reporter-7.0.5"
       sources."postcss-value-parser-4.2.0"
@@ -817,7 +807,7 @@ let
       sources."update-browserslist-db-1.0.9"
       sources."wrap-ansi-7.0.0"
       sources."y18n-5.0.8"
-      sources."yaml-1.10.2"
+      sources."yaml-2.1.1"
       sources."yargs-17.5.1"
       sources."yargs-parser-21.1.1"
     ];

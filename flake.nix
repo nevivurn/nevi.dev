@@ -5,7 +5,8 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-    in {
+    in
+    {
       devShells.${system}.default =
         pkgs.mkShell {
           nativeBuildInputs = with pkgs; [ hugo nodejs node2nix ];
@@ -32,5 +33,5 @@
           installPhase = "true";
         };
       defaultPackage.x86_64-linux = self.packages.${system}.nevi-dev;
-  };
+    };
 }
