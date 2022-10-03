@@ -443,9 +443,10 @@ final block to truncate.
 
 Similarly, we could have performed the usual message extension
 attack[^wiki-cbc-length] given two message-MAC pairs `m1, c1, m2, c2`, by
-setting `m3 = m1 || xor(m2[:16], c1) || m2[16:], c3 = c2`. However, because the
-state is truncated before being returned as the MAC, we do not know the full MAC
-state before it is returned to us as the MAC tag to perform this attack.
+setting `m3 = m1 || xor(m2[:16], c1 || c2) || m2[16:], c3 = c2`. However,
+because the state is truncated before being returned as the MAC, we do not know
+the full MAC state before it is returned to us as the MAC tag to perform this
+attack.
 
 We can, however, obtain the majority of the final block's bits by sending a
 unpadded-padded message pair. They both result in the same pre-truncation final
