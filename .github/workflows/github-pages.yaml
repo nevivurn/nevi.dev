@@ -16,7 +16,7 @@ jobs:
 
       - run: nix flake check
       - run: nix build
-      - run: cp -r result/public/ public/
+      - run: cp -r --no-preserve=mode,ownership result/public/ public/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
