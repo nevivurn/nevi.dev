@@ -1,4 +1,4 @@
-name: Build
+name: Github Pages
 
 on:
   push:
@@ -16,13 +16,15 @@ jobs:
 
       - run: nix flake check
       - run: nix build
+      - run: cp -r result/public/ public/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: result/public/
+          path: public/
 
   deploy:
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
 
