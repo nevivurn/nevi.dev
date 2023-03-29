@@ -28,7 +28,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://www.nevi.dev
     permissions:
       pages: write
       id-token: write
