@@ -28,8 +28,6 @@ Simply open the rules and find the example flag.
 > This PDF contains the flag, but you’ll probably need to fix it first to figure out how it’s embedded. Fortunately, the file contains everything you need to render it. Follow the clues to find the flag, and hopefully learn something about the PDF format in the process.
 >
 > https://ams3.digitaloceanspaces.com/justctf/eccb3bff-69aa-4232-8087-a5e8eea0f581/challenge.pdf
->
-> [mirror](pdf/challenge.pdf)
 
 Open the PDF, and you're greeted with a single blank page. Opening the file in a
 text editor, however, reveals more interesting information. Near the beginning
@@ -94,7 +92,7 @@ __END__
 
 The ruby code seems to run a HTTP server and serves a `flag.zip` file, seems
 promising. Execute the PDF document as a ruby script, and download the resulting
-[zip file](pdf/flag.zip). Inside, we find a [`mutool`](pdf/mutool) binary and a
+zip file. Inside, we find a `mutool` binary and a
 `false_flag.md`:
 
 ````
