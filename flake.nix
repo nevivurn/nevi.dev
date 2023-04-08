@@ -9,28 +9,27 @@
     {
       devShells.${system}.default =
         pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ hugo nodejs node2nix ];
+          nativeBuildInputs = with pkgs; [ hugo nodejs ];
         };
       packages.${system}.nevi-dev =
-        let
-          nodeDependencies = (import ./node.nix { inherit pkgs; }).nodeDependencies;
-        in
-        pkgs.stdenvNoCC.mkDerivation {
+        pkgs.buildNpmPackage {
           name = "nevi-dev";
           src = builtins.path { path = ./.; name = "nevi-dev"; };
-          nativeBuildInputs = with pkgs; [ nodejs ];
+          npmDepsHash = "sha256-lLt0Le/DJZcOopLGbtmyKA7MMkrErtByNZXwaO4mhaI=";
 
-          postPatch = ''
-            ln -sf ${nodeDependencies}/lib/node_modules node_modules
-          '';
+          nativeBuildInputs = with pkgs; [ hugo ];
 
           buildPhase = ''
             runHook preBuild
-            ${pkgs.hugo}/bin/hugo --minify -d $out/public
+            hugo --minify -d $out/public
             runHook postBuild
           '';
-
-          installPhase = "true";
+          installPhase = ''
+            runHook preInstall
+            #mkdir -p $out
+            #cp -r public $out/public
+            runHook postInstall
+          '';
         };
       defaultPackage.x86_64-linux = self.packages.${system}.nevi-dev;
     };
