@@ -7,15 +7,11 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      devShells.${system}.default =
-        pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ hugo nodejs ];
-        };
-      packages.${system}.nevi-dev =
+      packages.${system}.default =
         pkgs.buildNpmPackage {
           name = "nevi-dev";
           src = builtins.path { path = ./.; name = "nevi-dev"; };
-          npmDepsHash = "sha256-lLt0Le/DJZcOopLGbtmyKA7MMkrErtByNZXwaO4mhaI=";
+          npmDepsHash = "sha256-XhP6fJevc/srOB4KG9zYEgep3PFfog5PznxTnLY0jWU=";
 
           nativeBuildInputs = with pkgs; [ hugo ];
 
@@ -24,13 +20,8 @@
             hugo --minify -d $out/public
             runHook postBuild
           '';
-          installPhase = ''
-            runHook preInstall
-            #mkdir -p $out
-            #cp -r public $out/public
-            runHook postInstall
-          '';
+          dontNpmInstall = true;
+          dontFixup = true; # don't fixup CTF challenge binaries etc.
         };
-      defaultPackage.x86_64-linux = self.packages.${system}.nevi-dev;
     };
 }
