@@ -8,19 +8,35 @@
     in
     {
       packages.${system}.default =
-        pkgs.buildNpmPackage {
+        let
+          npmDeps = pkgs.fetchNpmDeps {
+            name = "nevi-dev-npm-deps";
+            src = builtins.path {
+              path = ./.;
+              name = "nevi-dev";
+              filter = _p: _:
+                let p = builtins.baseNameOf _p; in
+                p == "package.json" || p == "package-lock.json";
+            };
+
+            hash = "sha256-mhib/0WJE3EfXvfiaWEDiwfPYoVTfzH0AWBVWhRy5M8=";
+          };
+        in
+
+        pkgs.stdenvNoCC.mkDerivation {
           name = "nevi-dev";
           src = builtins.path { path = ./.; name = "nevi-dev"; };
-          npmDepsHash = "sha256-mhib/0WJE3EfXvfiaWEDiwfPYoVTfzH0AWBVWhRy5M8=";
 
-          nativeBuildInputs = with pkgs; [ hugo ];
+          inherit npmDeps;
+          passthru = { inherit npmDeps; };
+
+          nativeBuildInputs = with pkgs; [ hugo nodejs npmHooks.npmConfigHook ];
 
           buildPhase = ''
             runHook preBuild
             hugo --minify -d $out/public
             runHook postBuild
           '';
-          dontNpmInstall = true;
           dontFixup = true; # don't fixup CTF challenge binaries etc.
         };
     };
