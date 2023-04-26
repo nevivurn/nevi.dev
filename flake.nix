@@ -11,7 +11,7 @@
         pkgs.buildNpmPackage {
           name = "nevi-dev";
           src = builtins.path { path = ./.; name = "nevi-dev"; };
-          npmDepsHash = "sha256-XhP6fJevc/srOB4KG9zYEgep3PFfog5PznxTnLY0jWU=";
+          npmDepsHash = "sha256-mhib/0WJE3EfXvfiaWEDiwfPYoVTfzH0AWBVWhRy5M8=";
 
           nativeBuildInputs = with pkgs; [ hugo ];
 
