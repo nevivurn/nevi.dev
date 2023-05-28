@@ -19,7 +19,7 @@
                 p == "package.json" || p == "package-lock.json";
             };
 
-            hash = "sha256-kCCHz3WiYFRof/tzeoGMo0eguEKImEh3EfDT3VbA+ko=";
+            hash = "sha256-0xI3UQE25nUQI4g+a+hs7O5miqUhvFQDUiohjarFJEY=";
           };
         in
 
