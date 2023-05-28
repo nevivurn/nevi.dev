@@ -1,5 +1,8 @@
 {
   "m.homeserver": {
     "base_url": "https://matrix.nevi.network"
+  },
+  "m.identity_server": {
+    "base_url": "https://vector.im"
   }
 }
