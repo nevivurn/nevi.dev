@@ -1,38 +1,59 @@
 {
-  outputs = { self, nixpkgs, flake-utils }:
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+
+    resume.url = "git+ssh://git@github.com/nevivurn/resume";
+    # intentionally avoid following nixpkgs here, for caching
+    resume.inputs.flake-utils.follows = "flake-utils";
+  };
+
+  outputs =
+    { self
+    , nixpkgs
+    , flake-utils
+    , resume
+    }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system}; in
-      {
-        packages.default =
-          let
-            npmDeps = pkgs.fetchNpmDeps {
-              name = "nevi-dev-npm-deps";
-              src = builtins.path {
-                path = ./.;
-                name = "nevi-dev";
-                filter = _p: _:
-                  let p = builtins.baseNameOf _p; in
-                  p == "package.json" || p == "package-lock.json";
-              };
-              hash = "sha256-397JK00/JbJAUthPiamZKPuLE8l2q4f51B0FwtEE7Pc=";
-            };
-          in
-          pkgs.stdenvNoCC.mkDerivation {
-            name = "nevi-dev";
-            src = builtins.path { path = ./.; name = "nevi-dev"; };
-
-            inherit npmDeps;
-            passthru = { inherit npmDeps; };
-
-            nativeBuildInputs = with pkgs; [ hugo nodejs npmHooks.npmConfigHook ];
-
-            buildPhase = ''
-              runHook preBuild
-              hugo --minify -d $out/public
-              runHook postBuild
-            '';
-            dontFixup = true; # don't fixup CTF challenge binaries etc.
+    let
+      pkgs = nixpkgs.legacyPackages.${system};
+      resumePDF = "${resume.packages.${system}.default}/resume.pdf";
+    in
+    {
+      devShells.default = pkgs.mkShell {
+        inputsFrom = [ self.packages.${system}.default ];
+        shellHook = ''
+          ln -sf ${resumePDF} static/
+        '';
+      };
+      packages.default =
+        let
+          npmDeps = pkgs.fetchNpmDeps {
+            name = "nevi-dev-npm-deps";
+            src = ./.;
+            hash = "sha256-397JK00/JbJAUthPiamZKPuLE8l2q4f51B0FwtEE7Pc=";
           };
-      }
+        in
+        pkgs.stdenvNoCC.mkDerivation {
+          name = "nevi-dev";
+          src = ./.;
+
+          inherit npmDeps;
+          passthru = { inherit npmDeps; };
+
+          nativeBuildInputs = with pkgs; [ hugo nodejs npmHooks.npmConfigHook ];
+
+          preBuild = ''
+            cp ${resumePDF} static/
+          '';
+
+          buildPhase = ''
+            runHook preBuild
+            hugo --minify -d $out/public
+            runHook postBuild
+          '';
+          dontStrip = true; # don't strip CTF challenge binaries etc.
+        };
+    }
     );
 }
