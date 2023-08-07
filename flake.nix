@@ -45,6 +45,8 @@
 
           preBuild = ''
             cp ${resumePDF} static/
+          '' + nixpkgs.lib.optionalString (self ? rev) ''
+            sed -i 's/build: draft/build: ${builtins.substring 0 7 self.rev}/' config.toml
           '';
 
           buildPhase = ''

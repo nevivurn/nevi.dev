@@ -2,6 +2,7 @@ title = "nevi.dev"
 baseURL = "https://www.nevi.dev"
 
 copyright = """
+build: draft |
 [email](mailto:nevivurn@nevi.dev) | [github](https://github.com/nevivurn) | [resume](resume.pdf)   
 Content on this site is [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
 """
