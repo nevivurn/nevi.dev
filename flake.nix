@@ -52,7 +52,7 @@
             hugo --minify -d $out/public
             runHook postBuild
           '';
-          dontStrip = true; # don't strip CTF challenge binaries etc.
+          dontFixup = true; # don't strip CTF challenge binaries etc.
         };
     }
     );
