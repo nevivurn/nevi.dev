@@ -4,7 +4,7 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     resume.url = "git+ssh://git@github.com/nevivurn/resume";
-    # intentionally avoid following nixpkgs here, for caching
+    resume.inputs.nixpkgs.follows = "nixpkgs";
     resume.inputs.flake-utils.follows = "flake-utils";
   };
 
