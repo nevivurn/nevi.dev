@@ -47,7 +47,7 @@
             cp ${resumePDF} 'static/Yongun_Seong_resume-${resumeVersion}.pdf'
             sed -i 's/resume\.pdf/Yongun_Seong_resume-${resumeVersion}\.pdf/' config.toml
           '' + nixpkgs.lib.optionalString (self ? rev) ''
-            sed -i 's/build: draft/build: ${builtins.substring 0 7 self.rev}/' config.toml
+            sed -i 's/DRAFT/${builtins.substring 0 7 self.rev}/' config.toml
           '';
 
           buildPhase = ''
