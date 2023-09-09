@@ -16,6 +16,12 @@ disableKinds = [
 [permalinks]
   posts = "/:year/:month/:day/:slug"
 
+[markup.highlight]
+	style = "dracula"
+	noClasses = false
+	lineNos = true
+	lineNumbersInTable = false
+
 [[module.mounts]]
 	source = "assets"
 	target = "assets"

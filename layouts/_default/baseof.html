@@ -17,11 +17,15 @@
 
 		<!-- Main stylesheet -->
 		{{ $style := resources.Get "styles.css" | resources.PostCSS }}
+		{{ $styleHighlight := resources.Get "highlight-dracula.css" | resources.PostCSS }}
 		{{ if not hugo.IsProduction }}
 			<link rel="stylesheet" href="{{ $style.RelPermalink }}">
+			<link rel="stylesheet" href="{{ $styleHighlight.RelPermalink }}">
 		{{ else }}
 			{{ $style = $style | minify | fingerprint | resources.PostProcess }}
+			{{ $styleHighlight = $styleHighlight | minify | fingerprint | resources.PostProcess }}
 			<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+			<link rel="stylesheet" href="{{ $styleHighlight.RelPermalink }}" integrity="{{ $styleHighlight.Data.Integrity }}">
 		{{ end }}
 
 		{{ block "head" . }}{{ end }}

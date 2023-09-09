@@ -23,6 +23,7 @@
       devShells.default = pkgs.mkShell {
         inputsFrom = [ self.packages.${system}.default ];
         shellHook = ''
+          hugo gen chromastyles --style dracula > assets/highlight-dracula.css
           ln -sf ${resumePDF} static/
         '';
       };
@@ -44,6 +45,7 @@
           nativeBuildInputs = with pkgs; [ hugo nodejs npmHooks.npmConfigHook ];
 
           preBuild = ''
+            hugo gen chromastyles --style dracula > assets/highlight-dracula.css
             cp ${resumePDF} 'static/Yongun_Seong_resume-${resumeVersion}.pdf'
             sed -i 's/resume\.pdf/Yongun_Seong_resume-${resumeVersion}\.pdf/' config.toml
           '' + nixpkgs.lib.optionalString (self ? rev) ''

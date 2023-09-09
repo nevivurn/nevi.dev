@@ -1,6 +1,6 @@
-module.exports = {
-    plugins: [
-        require('postcss-normalize'),
-        require('autoprefixer')
-    ]
+import autoprefixer from "autoprefixer"
+import postcssNormalize from "postcss-normalize"
+
+export default {
+	plugins: [postcssNormalize, autoprefixer]
 }
