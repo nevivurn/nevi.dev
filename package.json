@@ -1,10 +1,10 @@
 {
-  "name": "nevi-dev",
-  "type": "module",
-  "dependencies": {
-    "autoprefixer": "^10.4.0",
-    "katex": "^0.16.2",
-    "postcss-cli": "^10.1.0",
-    "postcss-normalize": "^10.0.1"
-  }
+	"name": "nevi-dev",
+	"type": "module",
+	"dependencies": {
+		"autoprefixer": "^10.4.0",
+		"katex": "^0.16.2",
+		"postcss-cli": "^10.1.0",
+		"postcss-normalize": "^10.0.1"
+	}
 }
