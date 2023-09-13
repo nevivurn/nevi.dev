@@ -58,11 +58,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1694265577,
-        "narHash": "sha256-P0taAjPjhUc9VnQV75x8oaERJ4AOuVY3hf89MKga35U=",
+        "lastModified": 1694567598,
+        "narHash": "sha256-kMKShAoxKF6t2OKsXZf10DconHKstUeXRbcv4f7pMjQ=",
         "ref": "refs/heads/master",
-        "rev": "1ffd28bbdc820bc2574b9f3dd5625426de7faa8b",
-        "revCount": 23,
+        "rev": "87495fe32a35db460e477ec56ccb128b58223c85",
+        "revCount": 24,
         "type": "git",
         "url": "ssh://git@github.com/nevivurn/resume"
       },
