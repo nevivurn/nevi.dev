@@ -48,8 +48,8 @@
             hugo gen chromastyles --style dracula > assets/highlight-dracula.css
             cp ${resumePDF} 'static/Yongun_Seong_resume-${resumeVersion}.pdf'
             sed -i 's/resume\.pdf/Yongun_Seong_resume-${resumeVersion}\.pdf/' config.toml
-          '' + nixpkgs.lib.optionalString (self ? rev) ''
-            sed -i 's/DRAFT/${builtins.substring 0 7 self.rev}/' config.toml
+          '' + nixpkgs.lib.optionalString (self ? shortRev) ''
+            sed -i 's/DRAFT/${self.shortRev}/' config.toml
           '';
 
           buildPhase = ''
