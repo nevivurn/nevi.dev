@@ -20,12 +20,17 @@
       resumeVersion = resume.shortRev;
     in
     {
-      devShells.default = pkgs.mkShell {
-        inputsFrom = [ self.packages.${system}.default ];
-        shellHook = ''
-          hugo gen chromastyles --style dracula > assets/highlight-dracula.css
-          ln -sf ${resumePDF} static/
-        '';
+      apps.serve = flake-utils.lib.mkApp {
+        drv = pkgs.writeShellApplication {
+          name = "hugo-serve";
+          runtimeInputs = with pkgs; [ nodejs hugo ];
+          text = ''
+            npm install
+            hugo gen chromastyles --style dracula > assets/highlight-dracula.css
+            ln -sf ${resumePDF} static/
+            hugo serve
+          '';
+        };
       };
       packages.default =
         let
