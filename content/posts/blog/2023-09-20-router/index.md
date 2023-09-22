@@ -61,6 +61,12 @@ I could have built the configuration from the router iself with just the
 packages, including the kernel, which would have taken forever on the low-power
 SoC.
 
+> Update(2023-09-22): I came across [this blog post][nixos-rebuild-target]
+> which made me aware of the `--target-host` flag. My deployments now look like
+> `nixos-rebuild switch --flake .#funi --target-host root@funi.nevi.network`.
+
+[nixos-rebuild-target]: https://www.haskellforall.com/2023/01/announcing-nixos-rebuild-new-deployment.html
+
 I also updated the firmware to the latest recommended version following the
 instructions on the [TekLager website][teklager-update] (method 4, using my
 existing NixOS system instead of a live USB). For the serial console, I used
