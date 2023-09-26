@@ -1,6 +1,6 @@
 {{- $img := .Get "src" | .Page.Resources.Get }}
 {{- $imgWebp := $img.Resize (printf "%dx%d webp" $img.Width $img.Height) }}
 <picture>
-	<source srcset="{{ $imgWebp.RelPermalink }}" type="image/webp">
-	<img src="{{ $img.RelPermalink }}" alt="{{ .Get "alt" }}">
+  <source srcset="{{ $imgWebp.RelPermalink }}" type="image/webp">
+  <img src="{{ $img.RelPermalink }}" alt="{{ .Get "alt" }}">
 </picture>

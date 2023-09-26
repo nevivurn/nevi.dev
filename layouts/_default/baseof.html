@@ -1,44 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<!-- Favicons -->
-		<link rel="apple-touch-icon" sizes="180x180" href="{{ relURL "/apple-touch-icon.png" }}">
-		<link rel="icon" type="image/png" sizes="32x32" href="{{ relURL "/favicon-32x32.png" }}">
-		<link rel="icon" type="image/png" sizes="16x16" href="{{ relURL "/favicon-16x16.png" }}">
-		<link rel="manifest" href="{{ relURL "/site.webmanifest" }}">
-		<link rel="mask-icon" href="{{ relURL "/safari-pinned-tab.svg" }}" color="#282a36">
-		<meta name="msapplication-TileColor" content="#2d89ef">
-		<meta name="theme-color" content="#282a36">
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ relURL "/apple-touch-icon.png" }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ relURL "/favicon-32x32.png" }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ relURL "/favicon-16x16.png" }}">
+    <link rel="manifest" href="{{ relURL "/site.webmanifest" }}">
+    <link rel="mask-icon" href="{{ relURL "/safari-pinned-tab.svg" }}" color="#282a36">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#282a36">
 
-		<title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
+    <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
 
-		<!-- Main stylesheet -->
-		{{ $style := resources.Get "styles.css" | resources.PostCSS }}
-		{{ $styleHighlight := resources.Get "highlight-dracula.css" | resources.PostCSS }}
-		{{ if not hugo.IsProduction }}
-			<link rel="stylesheet" href="{{ $style.RelPermalink }}">
-			<link rel="stylesheet" href="{{ $styleHighlight.RelPermalink }}">
-		{{ else }}
-			{{ $style = $style | minify | fingerprint | resources.PostProcess }}
-			{{ $styleHighlight = $styleHighlight | minify | fingerprint | resources.PostProcess }}
-			<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
-			<link rel="stylesheet" href="{{ $styleHighlight.RelPermalink }}" integrity="{{ $styleHighlight.Data.Integrity }}">
-		{{ end }}
+    <!-- Main stylesheet -->
+    {{ $style := resources.Get "styles.css" | resources.PostCSS | minify | fingerprint }}
+    {{ $styleHighlight := resources.Get "highlight-dracula.css" | resources.PostCSS | minify | fingerprint }}
+    <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+    <link rel="stylesheet" href="{{ $styleHighlight.RelPermalink }}" integrity="{{ $styleHighlight.Data.Integrity }}">
 
-		{{ block "head" . }}{{ end }}
-	</head>
+    {{ block "head" . }}{{ end }}
+  </head>
 
-	<body>
-		<main>
-			{{ block "main" . }}{{ end }}
-		</main>
+  <body>
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
 
-		<footer>
-			<hr>
-			<small>{{ .Site.Copyright | markdownify }}</small>
-		</footer>
-	</body>
+    <footer>
+      <hr>
+      <small>{{ .Site.Copyright | markdownify }}</small>
+    </footer>
+  </body>
 </html>

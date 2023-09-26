@@ -4,26 +4,24 @@
 
 {{ define "head" }}
 {{ if .Params.math }}
-	{{ $katexCSS := resources.Get "dist/katex/katex.min.css" | fingerprint }}
-	{{ $katexJS := resources.Get "dist/katex/katex.min.js" | fingerprint }}
-	{{ $katexJSAuto := resources.Get "dist/katex/contrib/auto-render.min.js" | fingerprint }}
-	<link rel="stylesheet" href="{{ $katexCSS.RelPermalink }}" integrity="{{ $katexCSS.Data.Integrity }}">
-	<script defer src="{{ $katexJS.RelPermalink }}" integrity="{{ $katexJS.Data.Integrity }}"></script>
-	<script defer src="{{ $katexJSAuto.RelPermalink }}" integrity="{{ $katexJSAuto.Data.Integrity }}"
-		onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+  {{ $katexCSS := resources.Get "dist/katex/katex.min.css" | fingerprint }}
+  {{ $katexJS := resources.Get "dist/katex/katex.min.js" | fingerprint }}
+  {{ $katexJSAuto := resources.Get "dist/katex/contrib/auto-render.min.js" | fingerprint }}
+  <link rel="stylesheet" href="{{ $katexCSS.RelPermalink }}" integrity="{{ $katexCSS.Data.Integrity }}">
+  <script defer src="{{ $katexJS.RelPermalink }}" integrity="{{ $katexJS.Data.Integrity }}"></script>
+  <script defer src="{{ $katexJSAuto.RelPermalink }}" integrity="{{ $katexJSAuto.Data.Integrity }}"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
 {{ end }}
 {{ end }}
 
 {{ define "main" }}
 <article>
-	<header>
-		<h1>{{ .Title }}</h1>
-
-		{{ $date := .Date.UTC.Format "2006-01-02" }}
-		<time datetime="{{ $date }}">{{ $date }}</time>
-		on <a href="{{ relURL "/" }}">{{ .Site.Title }}</a>
-
-	</header>
-	{{ .Content }}
+  <header>
+    <h1>{{ .Title }}</h1>
+    {{ $date := .Date.UTC.Format "2006-01-02" }}
+    <time datetime="{{ $date }}">{{ $date }}</time>
+    on <a href="{{ relURL "/" }}">{{ .Site.Title }}</a>
+  </header>
+  {{ .Content }}
 </article>
 {{ end }}

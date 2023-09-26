@@ -16,6 +16,7 @@
     flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
+      runtimeDeps = with pkgs; [ hugo nodejs dart-sass-embedded ];
       resumePDF = "${resume.packages.${system}.default}/resume.pdf";
       resumeVersion = resume.shortRev;
     in
@@ -23,7 +24,7 @@
       apps.serve = flake-utils.lib.mkApp {
         drv = pkgs.writeShellApplication {
           name = "hugo-serve";
-          runtimeInputs = with pkgs; [ nodejs hugo ];
+          runtimeInputs = runtimeDeps;
           text = ''
             npm install
             hugo gen chromastyles --style dracula > assets/highlight-dracula.css
@@ -37,7 +38,7 @@
           npmDeps = pkgs.fetchNpmDeps {
             name = "nevi-dev-npm-deps";
             src = ./.;
-            hash = "sha256-zyTOHqjzAoWrirV4D2NDTDlizNL6uZl0rC/ntQwJHiI=";
+            hash = "sha256-M2jOiUJFHkwu8/mKGvMFxrG50Gj/VzHl3Y0IDS1qfK8=";
           };
         in
         pkgs.stdenvNoCC.mkDerivation {
@@ -47,7 +48,7 @@
           inherit npmDeps;
           passthru = { inherit npmDeps; };
 
-          nativeBuildInputs = with pkgs; [ hugo nodejs npmHooks.npmConfigHook ];
+          nativeBuildInputs = runtimeDeps ++ (with pkgs; [ npmHooks.npmConfigHook ]);
 
           preBuild = ''
             hugo gen chromastyles --style dracula > assets/highlight-dracula.css

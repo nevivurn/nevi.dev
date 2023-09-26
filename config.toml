@@ -15,24 +15,35 @@ disableKinds = [
 ]
 [permalinks]
   posts = "/:year/:month/:day/:slug"
+  slides = "/slides/:year/:month/:day/:slug"
 
 [markup.highlight]
-	style = "dracula"
-	noClasses = false
-	lineNos = true
-	lineNumbersInTable = false
+  style = "dracula"
+  noClasses = false
+  lineNos = true
+  lineNumbersInTable = false
 
 [[module.mounts]]
-	source = "assets"
-	target = "assets"
+  source = "assets"
+  target = "assets"
 [[module.mounts]]
-	source = "static"
-	target = "static"
+  source = "static"
+  target = "static"
 
 [[module.mounts]]
-	source = "node_modules/katex/dist"
-	target = "assets/dist/katex"
-	includeFiles = "/**/.min.*"
+  source = "node_modules/katex/dist"
+  target = "assets/dist/katex"
+  includeFiles = "/**/.min.*"
 [[module.mounts]]
-	source = "node_modules/katex/dist/fonts"
-	target = "static/dist/katex/fonts"
+  source = "node_modules/katex/dist/fonts"
+  target = "static/dist/katex/fonts"
+
+[[module.mounts]]
+  source = "node_modules/reveal.js"
+  target = "assets/dist/reveal.js"
+[[module.mounts]]
+  source = "node_modules/reveal.js/dist/theme/fonts"
+  target = "static/dist/reveal.js/dist/theme/fonts"
+[[module.mounts]]
+  source = "node_modules/highlight.js"
+  target = "assets/dist/highlight.js"
