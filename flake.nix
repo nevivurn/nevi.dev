@@ -16,7 +16,7 @@
     flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
-      runtimeDeps = with pkgs; [ hugo nodejs dart-sass-embedded ];
+      runtimeDeps = with pkgs; [ hugo nodejs ];
       resumePDF = "${resume.packages.${system}.default}/resume.pdf";
       resumeVersion = resume.shortRev;
     in
