@@ -7,6 +7,6 @@
     "katex": "^0.16.2",
     "postcss-cli": "^10.1.0",
     "postcss-normalize": "^10.0.1",
-    "reveal.js": "^4.6.1"
+    "reveal.js": "^5.0.2"
   }
 }
