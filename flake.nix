@@ -7,48 +7,41 @@
     resume.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , flake-utils
-    , resume
-    }:
+  outputs = { self, nixpkgs, flake-utils, resume }:
     flake-utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = nixpkgs.legacyPackages.${system};
-      runtimeDeps = with pkgs; [ hugo nodejs ];
-      resumePDF = "${resume.packages.${system}.default}/resume.pdf";
-      resumeVersion = resume.shortRev;
-    in
-    {
-      apps.serve = flake-utils.lib.mkApp {
-        drv = pkgs.writeShellApplication {
-          name = "hugo-serve";
-          runtimeInputs = runtimeDeps;
-          text = ''
-            npm install
-            hugo gen chromastyles --style dracula > assets/highlight-dracula.css
-            ln -sf ${resumePDF} static/
-            hugo serve
-          '';
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        runtimeDeps = with pkgs; [ hugo nodejs ];
+        resumePDF = "${resume.packages.${system}.default}/resume.pdf";
+        resumeVersion = resume.shortRev;
+      in {
+        apps.serve = flake-utils.lib.mkApp {
+          drv = pkgs.writeShellApplication {
+            name = "hugo-serve";
+            runtimeInputs = runtimeDeps;
+            text = ''
+              npm install
+              hugo gen chromastyles --style dracula > assets/highlight-dracula.css
+              ln -sf ${resumePDF} static/
+              hugo serve
+            '';
+          };
         };
-      };
-      packages.default =
-        let
+        packages.default = let
           npmDeps = pkgs.fetchNpmDeps {
             name = "nevi-dev-npm-deps";
             src = ./.;
-            hash = "sha256-M6oKcwilo3k850hJnP1OKDyaivd/z8Who7CBTufgjHs=";
+            hash = "sha256-pjQ2c26XmK/pALvbtuQB+stBNdaiRsKViq0JLZZZy/A=";
           };
-        in
-        pkgs.stdenvNoCC.mkDerivation {
+        in pkgs.stdenvNoCC.mkDerivation {
           name = "nevi-dev";
           src = ./.;
 
           inherit npmDeps;
           passthru = { inherit npmDeps; };
 
-          nativeBuildInputs = runtimeDeps ++ (with pkgs; [ npmHooks.npmConfigHook ]);
+          nativeBuildInputs = runtimeDeps
+            ++ (with pkgs; [ npmHooks.npmConfigHook ]);
 
           preBuild = ''
             hugo gen chromastyles --style dracula > assets/highlight-dracula.css
@@ -65,6 +58,5 @@
           '';
           dontFixup = true; # don't strip CTF challenge binaries etc.
         };
-    }
-    );
+      });
 }
