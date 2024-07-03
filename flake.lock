@@ -36,11 +36,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1702272962,
-        "narHash": "sha256-D+zHwkwPc6oYQ4G3A1HuadopqRwUY/JkMwHz1YF7j4Q=",
+        "lastModified": 1719468428,
+        "narHash": "sha256-vN5xJAZ4UGREEglh3lfbbkIj+MPEYMuqewMn4atZFaQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e97b3e4186bcadf0ef1b6be22b8558eab1cdeb5d",
+        "rev": "1e3deb3d8a86a870d925760db1a5adecc64d329d",
         "type": "github"
       },
       "original": {
@@ -58,11 +58,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1702398696,
-        "narHash": "sha256-KJxthFxfheBQtPAprrZphqOlP4Bz3BOMxXcfzHih78Q=",
+        "lastModified": 1720005630,
+        "narHash": "sha256-Wd43aszQV8V/6AEbSvjlVJaWSiG7mSUHg2AiYPcdAZI=",
         "ref": "refs/heads/master",
-        "rev": "1df33200320782f6b72aaae359620ed4e23d7f74",
-        "revCount": 28,
+        "rev": "438ba131c37b99ec139fc088ec0b7283b413653f",
+        "revCount": 29,
         "type": "git",
         "url": "ssh://git@github.com/nevivurn/resume"
       },
