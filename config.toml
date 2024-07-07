@@ -3,7 +3,7 @@ baseURL = "https://www.nevi.dev"
 
 copyright = """
 [build](https://github.com/nevivurn/nevi.dev): DRAFT |
-[email](mailto:nevivurn@nevi.dev) | [github](https://github.com/nevivurn) | [resume](/resume.pdf)   
+[email](mailto:nevivurn@nevi.dev) | [github](https://github.com/nevivurn) | [resume](/resume.pdf)  
 Content on this site is [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
 """
 
@@ -37,13 +37,3 @@ disableKinds = [
 [[module.mounts]]
   source = "node_modules/katex/dist/fonts"
   target = "static/dist/katex/fonts"
-
-[[module.mounts]]
-  source = "node_modules/reveal.js"
-  target = "assets/dist/reveal.js"
-[[module.mounts]]
-  source = "node_modules/reveal.js/dist/theme/fonts"
-  target = "static/dist/reveal.js/dist/theme/fonts"
-[[module.mounts]]
-  source = "node_modules/highlight.js"
-  target = "assets/dist/highlight.js"
