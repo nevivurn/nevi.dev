@@ -43,7 +43,7 @@
             npmDeps = pkgs.fetchNpmDeps {
               name = "nevi-dev-npm-deps";
               src = ./.;
-              hash = "sha256-eC+HTBGWdCWMqh7R9NTWB55V1H/G+1pvT+ok0/oDBj8=";
+              hash = "sha256-5MO8P6IFgOTBp7+F87/3mIjMSaZdfyC5pnoydKM2OUs=";
             };
           in
           pkgs.stdenvNoCC.mkDerivation {
