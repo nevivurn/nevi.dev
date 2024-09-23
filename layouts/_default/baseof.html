@@ -16,8 +16,8 @@
     <title>{{ block "title" . }}{{ .Site.Title }}{{ end }}</title>
 
     <!-- Main stylesheet -->
-    {{ $style := resources.Get "styles.css" | resources.PostCSS | minify | fingerprint }}
-    {{ $styleHighlight := resources.Get "highlight-dracula.css" | resources.PostCSS | minify | fingerprint }}
+    {{ $style := resources.Get "styles.css" | css.PostCSS | minify | fingerprint }}
+    {{ $styleHighlight := resources.Get "highlight-dracula.css" | css.PostCSS | minify | fingerprint }}
     <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
     <link rel="stylesheet" href="{{ $styleHighlight.RelPermalink }}" integrity="{{ $styleHighlight.Data.Integrity }}">
 
