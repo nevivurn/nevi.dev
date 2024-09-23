@@ -5,11 +5,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1710146030,
-        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
+        "lastModified": 1726560853,
+        "narHash": "sha256-X6rJYSESBVr3hBoH0WbKE5KvhPU5bloyZ2L4K60/fPQ=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
+        "rev": "c1dfcf08411b08f6b8615f7d8971a2bfa81d5e8a",
         "type": "github"
       },
       "original": {
@@ -20,11 +20,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1719900233,
-        "narHash": "sha256-n0r/+L73jFW4Y+sCUerulR7VcVADnfcXdzRs7PaiIqw=",
+        "lastModified": 1726871744,
+        "narHash": "sha256-V5LpfdHyQkUF7RfOaDPrZDP+oqz88lTJrMT1+stXNwo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0f56e3221392452f2c38e3ddf2eba03abda6bf47",
+        "rev": "a1d92660c6b3b7c26fb883500a80ea9d33321be2",
         "type": "github"
       },
       "original": {
@@ -58,11 +58,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1720005630,
-        "narHash": "sha256-Wd43aszQV8V/6AEbSvjlVJaWSiG7mSUHg2AiYPcdAZI=",
+        "lastModified": 1726672501,
+        "narHash": "sha256-lT/xKZmSjxAwyA+QvdFN+MzJIxQCR8eD8oEgPhXLqPY=",
         "ref": "refs/heads/master",
-        "rev": "438ba131c37b99ec139fc088ec0b7283b413653f",
-        "revCount": 29,
+        "rev": "b74d5f8432c5d6261b64c29e3626ad5e91d4cb07",
+        "revCount": 32,
         "type": "git",
         "url": "ssh://git@github.com/nevivurn/resume"
       },
