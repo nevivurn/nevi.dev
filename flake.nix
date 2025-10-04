@@ -36,7 +36,7 @@
             npmDeps = pkgs.fetchNpmDeps {
               name = "nevi-dev-npm-deps";
               src = ./.;
-              hash = "sha256-MJarwerksHRPACp6vi85Q9J5rfktUXyFyqSFOhEj85Q=";
+              hash = "sha256-IFJ1JrAYEbLh2AEgcdK7zm4r7euCeHGhXzZZrNmE1CI=";
             };
           in
           pkgs.stdenvNoCC.mkDerivation {
@@ -46,13 +46,12 @@
             inherit npmDeps;
             nativeBuildInputs = runtimeDeps ++ (with pkgs; [ npmHooks.npmConfigHook ]);
 
-            preBuild =
-              ''
-                hugo gen chromastyles --style dracula > assets/highlight-dracula.css
-              ''
-              + nixpkgs.lib.optionalString (self ? shortRev) ''
-                sed -i 's/DRAFT/${self.shortRev}/' config.toml
-              '';
+            preBuild = ''
+              hugo gen chromastyles --style dracula > assets/highlight-dracula.css
+            ''
+            + nixpkgs.lib.optionalString (self ? shortRev) ''
+              sed -i 's/DRAFT/${self.shortRev}/' config.toml
+            '';
 
             buildPhase = ''
               runHook preBuild
