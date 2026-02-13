@@ -21,14 +21,19 @@ jobs:
       - run: nix flake check
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      - run: nix build
+      - run: echo "path=$(nix build --print-out-paths --no-link)" >> "$GITHUB_OUTPUT"
+        id: build
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      - run: cp -r --no-preserve=mode,ownership result/public/ public/
 
-      - uses: actions/upload-pages-artifact@v4
+      # Cannot use actions/upload-pages-artifact@v4, it excludes .well-known
+      - run: tar --directory "$BUILD_PATH/public/" -cvf "$RUNNER_TEMP/artifact.tar" .
+        env:
+          BUILD_PATH: ${{ steps.build.outputs.path }}
+      - uses: actions/upload-artifact@v6
         with:
-          path: public/
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
 
   deploy:
     name: Deploy
