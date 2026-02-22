@@ -31,12 +31,25 @@
             '';
           };
         };
+        apps.update-npm-hash = flake-utils.lib.mkApp {
+          drv = pkgs.writeShellApplication {
+            name = "update-npm-hash";
+            runtimeInputs = with pkgs; [
+              prefetch-npm-deps
+              gnused
+            ];
+            text = ''
+              hash=$(prefetch-npm-deps package-lock.json)
+              sed -i "s|hash = \".*\"; # npmDeps|hash = \"$hash\"; # npmDeps|" flake.nix
+            '';
+          };
+        };
         packages.default =
           let
             npmDeps = pkgs.fetchNpmDeps {
               name = "nevi-dev-npm-deps";
               src = ./.;
-              hash = "sha256-2fjBRZO42wi6K9AcIDTgsQf4a5gYFTg8shR2Ji1YWxE=";
+              hash = "sha256-5zN3OAsXX/I5I8hoZn/nPFy2JSSDX6nkLmJP6vs4Glc="; # npmDeps
             };
           in
           pkgs.stdenvNoCC.mkDerivation {
