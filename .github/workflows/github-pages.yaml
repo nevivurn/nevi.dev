@@ -30,7 +30,7 @@ jobs:
       - run: tar --directory "$BUILD_PATH/public/" -cvf "$RUNNER_TEMP/artifact.tar" .
         env:
           BUILD_PATH: ${{ steps.build.outputs.path }}
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: github-pages
           path: ${{ runner.temp }}/artifact.tar
